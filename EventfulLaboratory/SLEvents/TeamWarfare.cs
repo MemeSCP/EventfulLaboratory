@@ -116,6 +116,10 @@ namespace EventfulLaboratory.slevents
             ev.Player.ClearInventory();
             if (ev.Killer.GetRole() != ev.Player.GetRole())
             {
+                AddToKda(ev.Killer.GetPlayerId());
+                UpdateKDAOfUser(ev.Killer);
+                AddToKda(ev.Player.GetPlayerId(), false);
+                UpdateKDAOfUser(ev.Player);
                 if (ev.Killer.GetRole() == RoleType.ChaosInsurgency)
                 {
                     _chaosKills++;
@@ -189,7 +193,7 @@ namespace EventfulLaboratory.slevents
             player.AddItem(sif);
         }
 
-        private void AddToKda(int userid, int amount, bool kill = true)
+        private void AddToKda(int userid, bool kill = true)
         {
             if (!_kda.ContainsKey(userid))
             {
@@ -209,10 +213,17 @@ namespace EventfulLaboratory.slevents
 
         private void UpdateKDAOfUser(ReferenceHub hub)
         {
+            String KDAString;
             if (_kda.ContainsKey(hub.GetPlayerId()))
             {
-                Tuple<int, int> kda = _kda[hub.]
+                Tuple<int, int> kda = _kda[hub.GetPlayerId()];
+                KDAString = $"[<color=green>{kda.Item1}</color>|<color=red>{kda.Item2}</color>]";
             }
+            else
+            {
+                KDAString = "[<color=green>0</color>|<color=red>0</color>]";
+            }
+            hub.serverRoles.SetText($"{KDAString} {hub.serverRoles.MyText}");
         }
     }
 }
