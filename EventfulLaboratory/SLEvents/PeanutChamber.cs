@@ -148,7 +148,7 @@ namespace EventfulLaboratory.slevents
             hub.SetRole(RoleType.Scp173);
             yield return Timing.WaitForSeconds(0.3f);
             hub.SetPosition(_shelter.Position + new Vector3(0, 2, 0));
-            hub.SetMaxHealth(5000);
+            hub.SetMaxHealth(2500);
             hub.SetHealth(1000);
             hub.Broadcast(15, Constant.PEANUT_CHAMBER_173_WARN, false);
         }
