@@ -40,6 +40,16 @@ namespace EventfulLaboratory
             }
         }
 
+        public static void ToggleLockEntranceGate(bool lockit = true)
+        {
+            Door gate = Map.Doors.Find(door => door.DoorName == Constant.ECZ_GATE);
+            if (gate != null)
+            {
+                gate.locked = lockit;
+                gate.UpdateLock();
+            }
+        }
+
         public static void ForceRoundEnd(RoundSummary.LeadingTeam team)
         {
             bool force = true, allow = true, something = false;

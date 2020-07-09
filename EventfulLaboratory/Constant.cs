@@ -16,6 +16,8 @@ namespace EventfulLaboratory
         public static readonly String HCZ_ELEV_B_DOOR = "HCZ_ChkpB";
         public static readonly String HCZ_106_DOOR = "HCZ_106";
 
+        public static readonly String ECZ_GATE = "CHECKPOINT_ENT";
+
         public static readonly String PEANUT_CHAMBER_WELCOME = "Welcome to the Peanut Chamber. Prepare your allergies.";
         public static readonly String PEANUT_CHAMBER_DCLASS_WARN = "Prepare your necks! It's snapping time.";
         public static readonly String PEANUT_CHAMBER_173_WARN = "You know what to do.";
