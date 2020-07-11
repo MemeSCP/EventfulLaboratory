@@ -62,7 +62,7 @@ namespace EventfulLaboratory.slevents
             player.ammoBox.SetOneAmount(2, "30000");
         }
 
-        private void OnPlayerHurtProxy(ref PlayerHurtEvent ev) => OnPlayerHurt(ev);
+        private void OnPlayerHurtProxy(ref PlayerHurtEvent ev) => Timing.RunCoroutine(OnPlayerHurt(ev));
 
         private IEnumerator<float> OnPlayerHurt(PlayerHurtEvent ev)
         {
@@ -74,6 +74,7 @@ namespace EventfulLaboratory.slevents
                 ev.Player.SetRole(targetRole);
                 yield return Timing.WaitForSeconds(0.3f);
                 ev.Player.SetPosition(loc);
+                ev.Player.effectsController.EnableEffect(Constant.THAWED_EFFECT_API_NAME);
             } 
             else 
             {

@@ -26,5 +26,7 @@ namespace EventfulLaboratory
         public static readonly String PEANUT_CHAMBER_END = "Game end. Thanks for playing!";
 
         public static readonly String[] PEANUT_VIRUS_DOOR_BLOCK = {HCZ_ELEV_A_DOOR, HCZ_ELEV_B_DOOR, HCZ_106_DOOR};
+
+        public static readonly String THAWED_EFFECT_API_NAME = "thawed";
     }
 }

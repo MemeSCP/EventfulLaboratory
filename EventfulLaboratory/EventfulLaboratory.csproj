@@ -418,7 +418,8 @@
   <ItemGroup>
     <Compile Include="Common.cs" />
     <Compile Include="Constant.cs" />
-    <Compile Include="HarmonyPatches\SCP096_Patch.cs" />
+    <Compile Include="Effects\Thawed.cs" />
+    <Compile Include="HarmonyPatches\ThawedEffectPatch.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="LabEvents.cs" />
     <Compile Include="SLEvents\BlankEvent.cs" />
