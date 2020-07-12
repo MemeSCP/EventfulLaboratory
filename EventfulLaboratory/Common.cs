@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Dissonance;
 using EXILED;
 using EXILED.ApiObjects;
@@ -65,6 +67,12 @@ namespace EventfulLaboratory
         {
             ev.MaxRespawnAmt = 0;
             ev.ToRespawn.Clear();
+        }
+
+        public static Room GetRandomHeavyRoom()
+        {
+            List<Room> hczRooms = Map.Rooms.FindAll((room => room.Zone == ZoneType.HeavyContainment));
+            return hczRooms[new Random().Next(hczRooms.Count -1)];
         }
     }
 }

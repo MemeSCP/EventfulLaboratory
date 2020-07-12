@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 using EventfulLaboratory.structs;
+using EXILED;
+using EXILED.Patches;
 
 namespace EventfulLaboratory.slevents
 {
@@ -21,6 +23,10 @@ namespace EventfulLaboratory.slevents
         public override void OnRoundStart()
         {
             Logger.Info("RoundStarted");
+        }
+
+        private void OnElevatorInterract(ElevatorInteractionEvent ev)
+        {
         }
 
         public override void OnRoundEnd()

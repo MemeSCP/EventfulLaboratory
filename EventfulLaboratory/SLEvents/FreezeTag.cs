@@ -10,6 +10,7 @@ namespace EventfulLaboratory.slevents
 {
     public class FreezeTag : AEvent
     {
+        private Dictionary<int, ReferenceHub> _thawedPlayers;
         public override void OnNewRound()
         {
             //NOOP
@@ -17,6 +18,7 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
+            _thawedPlayers = new Dictionary<int, ReferenceHub>();
             Common.LockRound();
             Common.DisableLightElevators();
             Common.ToggleLockEntranceGate();
@@ -26,6 +28,7 @@ namespace EventfulLaboratory.slevents
                     player.GetPlayerId() % 2 == 1 ? RoleType.ChaosInsurgency : RoleType.NtfLieutenant));
             }
             Events.PlayerHurtEvent += OnPlayerHurtProxy;
+            Events.PlayerDeathEvent += OnPlayerDeathProxy;
         }
 
         public override void OnRoundEnd()
@@ -75,11 +78,23 @@ namespace EventfulLaboratory.slevents
                 yield return Timing.WaitForSeconds(0.3f);
                 ev.Player.SetPosition(loc);
                 ev.Player.effectsController.EnableEffect(Constant.THAWED_EFFECT_API_NAME);
+                ev.Player.handcuffs.CufferId = ev.Attacker.GetPlayerId();
+                _thawedPlayers.Add(ev.Player.GetPlayerId(), ev.Player);
             } 
             else 
             {
                 ev.Player.SetHealth(100);
             }
+        }
+
+        private void OnPlayerDeathProxy(ref PlayerDeathEvent ev) => Timing.RunCoroutine(OnPlayerDeath(ev));
+
+        private IEnumerator<float> OnPlayerDeath(PlayerDeathEvent ev)
+        {
+            SpawnHubAsParameter(ev.Player,
+                ev.Player.GetPlayerId() % 2 == 1 ? RoleType.ChaosInsurgency : RoleType.NtfLieutenant);
+            yield return Timing.WaitForSeconds(1f);
+            ev.Player.SetPosition(Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0));
         }
     }
 }

@@ -251,7 +251,7 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Frun_002Fmedia_002Fsqbika_002FSQBIKAPNDR2_002FEventfulLaboratory_002FSCPSL_005FData_002FManaged_002FUnityEngine_002EWindModule_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Frun_002Fmedia_002Fsqbika_002FSQBIKAPNDR2_002FEventfulLaboratory_002FSCPSL_005FData_002FManaged_002FUnityEngine_002EXRModule_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Frun_002Fmedia_002Fsqbika_002FSQBIKAPNDR2_002FEventfulLaboratory_002FSCPSL_005FData_002FManaged_002Fzxing_002Eunity_002Edll/@EntryIndexedValue">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
-  &lt;Assembly Path="E:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll" /&gt;&#xD;
-  &lt;Assembly Path="E:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll" /&gt;&#xD;
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;
+  &lt;Assembly Path="G:\EventfulLaboratory\EXILED\EXILED\Plugins\dependencies\0Harmony.dll" /&gt;
+  &lt;Assembly Path="/home/sqbika/Dev/EventfulLaboratory/EventfulLaboratory/bin/Debug/Assembly-CSharp.dll" /&gt;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
