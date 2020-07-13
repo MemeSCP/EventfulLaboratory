@@ -217,13 +217,18 @@ namespace EventfulLaboratory.slevents
             if (_kda.ContainsKey(hub.GetPlayerId()))
             {
                 Tuple<int, int> kda = _kda[hub.GetPlayerId()];
-                kdaString = $"[<color=green>{kda.Item1}</color>|<color=red>{kda.Item2}</color>]";
+                kdaString = $"/{kda.Item1}|{kda.Item2}/";
             }
             else
             {
-                kdaString = "[<color=green>0</color>|<color=red>0</color>]";
+                kdaString = "/0|0/";
             }
-            hub.serverRoles.SetText($"{kdaString} {hub.serverRoles.MyText}");
+            string text = hub.serverRoles.MyText;
+            if (text.Contains("/"))
+            {
+                text = hub.serverRoles.MyText.Split('/')[2];
+            }
+            hub.serverRoles.SetText($"{kdaString} {text}");
         }
     }
 }
