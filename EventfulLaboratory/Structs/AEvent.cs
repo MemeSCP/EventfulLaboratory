@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using EventfulLaboratory.slevents;
 using EXILED.Patches;
+using Random = Unity.Mathematics.Random;
 
 namespace EventfulLaboratory.structs
 { 
@@ -17,12 +18,19 @@ namespace EventfulLaboratory.structs
                     return new TeamWarfare();
                 case LabEvents.PeanutVirus:
                     return new PeanutVirus();
+                case LabEvents.FreezeTag:
+                    return new FreezeTag();
                 default:
                     if (Plugin.DEBUG)
                         return new DebugEvent();
                     else
                         return new BlankEvent();
             }
+        }
+
+        public static AEvent GetRandomEvent()
+        {
+            return GetEvent((LabEvents)new Random().NextInt(1, 4));
         }
 
         public String GetName()

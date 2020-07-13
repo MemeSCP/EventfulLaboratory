@@ -13,6 +13,7 @@ namespace EventfulLaboratory
         private static AEvent _eventCandidate;
         private static AEvent _nextEvent;
         public static readonly bool DEBUG = true;
+        private static bool _doRandom = false;
 
         public override void OnEnable()
         {
@@ -49,6 +50,10 @@ namespace EventfulLaboratory
 
         private void OnNewRound()
         {
+            if (_doRandom && _nextEvent == null)
+            {
+                _nextEvent = AEvent.GetRandomEvent();
+            }
             if (_nextEvent != null)
             {
                 _eventCandidate.Disable();

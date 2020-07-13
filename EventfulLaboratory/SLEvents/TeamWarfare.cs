@@ -64,7 +64,7 @@ namespace EventfulLaboratory.slevents
             {
                 Timing.RunCoroutine(SpawnHubAsParameter(hub,
                     (hub.GetPlayerId() % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency)));
-                hub.Broadcast(5, "First team to get " + _maxScore + " kills win the round!", false);
+                hub.Broadcast(5, "Welcome to TeamWarfare! First team to get " + _maxScore + " kills wins the round!", false);
             }
             Map.DetonateNuke();
             Map.NukeDetonationTimer = 2f;
@@ -117,9 +117,9 @@ namespace EventfulLaboratory.slevents
             if (ev.Killer.GetRole() != ev.Player.GetRole())
             {
                 AddToKda(ev.Killer.GetPlayerId());
-                UpdateKDAOfUser(ev.Killer);
+                UpdateKdaOfUser(ev.Killer);
                 AddToKda(ev.Player.GetPlayerId(), false);
-                UpdateKDAOfUser(ev.Player);
+                UpdateKdaOfUser(ev.Player);
                 if (ev.Killer.GetRole() == RoleType.ChaosInsurgency)
                 {
                     _chaosKills++;
@@ -211,19 +211,19 @@ namespace EventfulLaboratory.slevents
             }
         }
 
-        private void UpdateKDAOfUser(ReferenceHub hub)
+        private void UpdateKdaOfUser(ReferenceHub hub)
         {
-            String KDAString;
+            String kdaString;
             if (_kda.ContainsKey(hub.GetPlayerId()))
             {
                 Tuple<int, int> kda = _kda[hub.GetPlayerId()];
-                KDAString = $"[<color=green>{kda.Item1}</color>|<color=red>{kda.Item2}</color>]";
+                kdaString = $"[<color=green>{kda.Item1}</color>|<color=red>{kda.Item2}</color>]";
             }
             else
             {
-                KDAString = "[<color=green>0</color>|<color=red>0</color>]";
+                kdaString = "[<color=green>0</color>|<color=red>0</color>]";
             }
-            hub.serverRoles.SetText($"{KDAString} {hub.serverRoles.MyText}");
+            hub.serverRoles.SetText($"{kdaString} {hub.serverRoles.MyText}");
         }
     }
 }
