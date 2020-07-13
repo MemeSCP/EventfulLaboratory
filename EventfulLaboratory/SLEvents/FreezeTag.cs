@@ -17,7 +17,7 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
-            Common.Broadcast(15, "<size=10>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.</size>");
+            Common.Broadcast(15, "<size=20>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.</size>");
             Common.LockRound();
             Common.DisableLightElevators();
             Common.ToggleLockEntranceGate();
@@ -67,6 +67,8 @@ namespace EventfulLaboratory.slevents
             player.ammoBox.SetOneAmount(0, "30000");
             player.ammoBox.SetOneAmount(1, "30000");
             player.ammoBox.SetOneAmount(2, "30000");
+            player.SetMaxHealth(9000);
+            player.SetHealth(9000);
         }
 
         private void OnPlayerHurtProxy(ref PlayerHurtEvent ev) => Timing.RunCoroutine(OnPlayerHurt(ev));
@@ -82,14 +84,14 @@ namespace EventfulLaboratory.slevents
                 yield return Timing.WaitForSeconds(0.3f);
                 ev.Player.SetPosition(loc);
                 ev.Player.effectsController.EnableEffect(Constant.THAWED_EFFECT_API_NAME);
-                ev.Player.handcuffs.CufferId = ev.Attacker.GetPlayerId();
+                ev.Player.HandcuffPlayer(ev.Attacker);
                 string color1 = ev.Player.GetRole() == RoleType.ChaosInsurgency ? "green" : "blue";
                 string color2 = ev.Attacker.GetRole() == RoleType.ChaosInsurgency ? "blue" : "green";
-                Common.Broadcast(5, $"<color={color2}>{ev.Player.GetNickname()}</color> has been thawed by <color=${color2}>{ev.Attacker.GetNickname()}</color>!", true);
+                Common.Broadcast(5, $"<color={color1}>{ev.Player.GetNickname()}</color> has been thawed by <color=${color2}>{ev.Attacker.GetNickname()}</color>!", true);
             } 
             else 
             {
-                ev.Player.SetHealth(100);
+                ev.Player.SetHealth(9000);
             }
 
             bool isChaos = false, isNtf = false;

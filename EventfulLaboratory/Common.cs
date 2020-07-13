@@ -71,7 +71,7 @@ namespace EventfulLaboratory
 
         public static Room GetRandomHeavyRoom()
         {
-            List<Room> hczRooms = Map.Rooms.FindAll((room => room.Zone == ZoneType.HeavyContainment));
+            List<Room> hczRooms = Map.Rooms.FindAll(room => room.Name.Contains("HCZ"));
             return hczRooms[new Random().Next(hczRooms.Count -1)];
         }
     }
