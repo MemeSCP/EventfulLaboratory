@@ -10,7 +10,6 @@ namespace EventfulLaboratory.slevents
 {
     public class FreezeTag : AEvent
     {
-        private Dictionary<int, ReferenceHub> _thawedPlayers;
         public override void OnNewRound()
         {
             //NOOP
@@ -18,7 +17,7 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
-            _thawedPlayers = new Dictionary<int, ReferenceHub>();
+            Common.Broadcast(15, "<size=10>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.</size>");
             Common.LockRound();
             Common.DisableLightElevators();
             Common.ToggleLockEntranceGate();
@@ -29,26 +28,31 @@ namespace EventfulLaboratory.slevents
             }
             Events.PlayerHurtEvent += OnPlayerHurtProxy;
             Events.PlayerDeathEvent += OnPlayerDeathProxy;
+            Events.PlayerHandcuffFreedEvent += OnPlayerUncuffed;
+            Events.TeamRespawnEvent += Common.PreventRespawnEvent;
         }
 
         public override void OnRoundEnd()
         {
-            throw new System.NotImplementedException();
+            Disable();
         }
 
         public override void Enable()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void Disable()
         {
-            throw new System.NotImplementedException();
+            Events.PlayerHurtEvent -= OnPlayerHurtProxy;
+            Events.PlayerDeathEvent -= OnPlayerDeathProxy;
+            Events.PlayerHandcuffFreedEvent -= OnPlayerUncuffed;
+            Events.TeamRespawnEvent -= Common.PreventRespawnEvent;
         }
 
         public override void Reload()
         {
-            throw new System.NotImplementedException();
+            
         }
         
         private IEnumerator<float> SpawnHubAsParameter(ReferenceHub player, RoleType role)
@@ -79,22 +83,71 @@ namespace EventfulLaboratory.slevents
                 ev.Player.SetPosition(loc);
                 ev.Player.effectsController.EnableEffect(Constant.THAWED_EFFECT_API_NAME);
                 ev.Player.handcuffs.CufferId = ev.Attacker.GetPlayerId();
-                _thawedPlayers.Add(ev.Player.GetPlayerId(), ev.Player);
+                string color1 = ev.Player.GetRole() == RoleType.ChaosInsurgency ? "green" : "blue";
+                string color2 = ev.Attacker.GetRole() == RoleType.ChaosInsurgency ? "blue" : "green";
+                Common.Broadcast(5, $"<color={color2}>{ev.Player.GetNickname()}</color> has been thawed by <color=${color2}>{ev.Attacker.GetNickname()}</color>!", true);
             } 
             else 
             {
                 ev.Player.SetHealth(100);
             }
+
+            bool isChaos = false, isNtf = false;
+            foreach (ReferenceHub player in Player.GetHubs())
+            {
+                if (!isChaos && player.GetRole() == RoleType.ChaosInsurgency) isChaos = true;
+                if (!isNtf && player.GetRole() == RoleType.NtfLieutenant) isNtf = true;
+                if (isChaos && isNtf)
+                    break;
+                else
+                {
+                    Map.RoundLock = false;
+                    if (isChaos)
+                    {
+                        Common.ForceRoundEnd(RoundSummary.LeadingTeam.ChaosInsurgency);
+                    }
+                    else if (isNtf)
+                    {
+                        Common.ForceRoundEnd(RoundSummary.LeadingTeam.FacilityForces);
+                    }
+                    else
+                    {
+                        Common.ForceRoundEnd(RoundSummary.LeadingTeam.Draw);
+                    }
+                    Common.Broadcast(5, "Game End.\nThanks for playing!", true);
+                }
+            }
         }
 
         private void OnPlayerDeathProxy(ref PlayerDeathEvent ev) => Timing.RunCoroutine(OnPlayerDeath(ev));
 
-        private IEnumerator<float> OnPlayerDeath(PlayerDeathEvent ev)
+        private IEnumerator<float> OnPlayerDeath(PlayerDeathEvent ev) => RandomPlayerRespawn(ev.Player);
+
+        private void OnPlayerUncuffed(ref HandcuffEvent ev)
         {
-            SpawnHubAsParameter(ev.Player,
-                ev.Player.GetPlayerId() % 2 == 1 ? RoleType.ChaosInsurgency : RoleType.NtfLieutenant);
+            RoleType playerRole = ev.Player.GetRole();
+            RoleType targetRole = ev.Target.GetRole();
+            if (
+                playerRole == RoleType.Scientist || //IF the Player who tried to uncuff is a Scientist (thawed)
+                playerRole == RoleType.ClassD ||  // If the Player who tried to uncuff is a ClassD (thawed)
+                (playerRole == RoleType.NtfLieutenant && targetRole == RoleType.ClassD) || //If the Player who uncuff is NTF and the target is a ClassD
+                (playerRole == RoleType.ChaosInsurgency && targetRole == RoleType.Scientist) //If the Player who uncuff is Chaos and the target is Scientist
+            )
+            {
+                ev.Allow = false;
+            }
+            else
+            {
+                Timing.RunCoroutine(RandomPlayerRespawn(ev.Target));
+            }
+        }
+
+        private IEnumerator<float> RandomPlayerRespawn(ReferenceHub player)
+        {
+            SpawnHubAsParameter(player,
+                player.GetPlayerId() % 2 == 1 ? RoleType.ChaosInsurgency : RoleType.NtfLieutenant);
             yield return Timing.WaitForSeconds(1f);
-            ev.Player.SetPosition(Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0));
+            player.SetPosition(Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0));
         }
     }
 }
