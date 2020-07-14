@@ -77,9 +77,15 @@ namespace EventfulLaboratory.slevents
 
         private void OnPlayerJoin(PlayerJoinEvent ev)
         {
-            Timing.RunCoroutine(SpawnHubAsParameter(ev.Player,
-                (ev.Player.GetPlayerId() % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency)));
-            ev.Player.Broadcast(5, "First team to get " + _maxScore + " kills win the round!", false);
+            SpawnPlayer(ev.Player);
+        }
+
+        private void OnPlayerSpawn(ref PlayerSpawnEvent ev)
+        {
+            if (ev.Role == RoleType.ClassD)
+            {
+                SpawnPlayer(ev.Player);
+            }
         }
 
         public void RoundRestartEvent()
@@ -191,6 +197,9 @@ namespace EventfulLaboratory.slevents
                 modSight = attachments[2],
             };
             player.AddItem(sif);
+            player.SetGodMode(true);
+            yield return Timing.WaitForSeconds(5);
+            player.SetGodMode(false);
         }
 
         private void AddToKda(int userid, bool kill = true)
@@ -229,6 +238,13 @@ namespace EventfulLaboratory.slevents
                 text = hub.serverRoles.MyText.Split('/')[2];
             }
             hub.serverRoles.SetText($"{kdaString} {text}");
+        }
+
+        private void SpawnPlayer(ReferenceHub player)
+        {
+            Timing.RunCoroutine(SpawnHubAsParameter(player,
+                (player.GetPlayerId() % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency)));
+            player.Broadcast(5, "First team to get " + _maxScore + " kills win the round!", false);
         }
     }
 }

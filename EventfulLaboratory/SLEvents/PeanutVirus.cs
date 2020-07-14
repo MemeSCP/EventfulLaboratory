@@ -54,7 +54,7 @@ namespace EventfulLaboratory.slevents
                 }
             }
             yield return Timing.WaitForSeconds(0.3f);
-            Map.StartDecontamination();
+            Common.DisableLightElevators();
             Events.PlayerDeathEvent += OnPeanutKillDelegate;
             Events.PlayerSpawnEvent += OnPlayerSpawn;
         }
@@ -66,11 +66,11 @@ namespace EventfulLaboratory.slevents
 
         private IEnumerator<float> OnPlayerSpawnRoutine(PlayerSpawnEvent ev)
         {
-            yield return Timing.WaitForSeconds(0.3f);
+            yield return Timing.WaitForSeconds(0.5f);
             if (ev.Role != RoleType.Scp173)
             {
                 ev.Player.SetRole(RoleType.ClassD);
-                yield return Timing.WaitForSeconds(0.3f);
+                yield return Timing.WaitForSeconds(0.5f);
                 ev.Player.SetPosition(Common.GetRoomByName(Constant.SEVEN_NINE_CHAMBER).Position + new Vector3(0, 2));
             }
         }
@@ -85,8 +85,9 @@ namespace EventfulLaboratory.slevents
             if (ev.Killer == _mainPeanut)
             {
                 ev.Player.SetRole(RoleType.Scp173);
-                yield return Timing.WaitForSeconds(1f);
+                yield return Timing.WaitForSeconds(0.3f);
                 ev.Player.SetScale(0.5f);
+                yield return Timing.WaitForSeconds(0.3f);
                 ev.Player.SetPosition(ev.Killer.GetPosition());
                 ev.Player.SetMaxHealth(800);
                 ev.Player.SetHealth(400);

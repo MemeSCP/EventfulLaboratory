@@ -54,8 +54,12 @@ namespace EventfulLaboratory
 
         public static void ForceRoundEnd(RoundSummary.LeadingTeam team)
         {
-            bool force = true, allow = true, something = false;
-            EXILED.Events.InvokeCheckRoundEnd(ref force, ref allow, ref team, ref something);
+            
+        }
+
+        private static void _ForceRoundEndProxy(ref CheckRoundEndEvent ev)
+        {
+            
         }
         
         public static void LockRound()
