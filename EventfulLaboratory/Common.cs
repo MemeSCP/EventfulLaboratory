@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dissonance;
-using EXILED;
-using EXILED.ApiObjects;
-using EXILED.Extensions;
+using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using JetBrains.Annotations;
+using Respawning;
 
 namespace EventfulLaboratory
 {
@@ -16,25 +16,27 @@ namespace EventfulLaboratory
         public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
         
         public static Room GetRoomByName(String roomName) =>
-            Map.Rooms.Find(room => room.Name == roomName);
+            Map.Rooms.First(room => room.Name == roomName);
 
-        public static void Broadcast(uint timing, string text, bool force = false)
+        public static void Broadcast(ushort timing, string text, bool force = false)
         {
-            foreach (ReferenceHub hub in Player.GetHubs())
+            foreach (Player hub in Player.List)
             {
                 if (force) hub.ClearBroadcasts();
-                hub.Broadcast(timing, text, false);
+                hub.Broadcast(timing, text);
             }
         }
         
-        public static void LockAllDoors() => 
-            Map.Doors.ForEach(door =>
+        public static void LockAllDoors()
+        {
+            foreach (Door door in Map.Doors)
             {
                 door.lockdown = true;
                 door.UpdateLock();
-            });
-        
-        public static void DisableLightElevators()
+            }
+        }
+
+        public static void DisableElevators()
         {
             foreach (Lift lift in UnityEngine.Object.FindObjectsOfType<Lift>())
             {
@@ -44,7 +46,7 @@ namespace EventfulLaboratory
 
         public static void ToggleLockEntranceGate(bool lockit = true)
         {
-            Door gate = Map.Doors.Find(door => door.DoorName == Constant.ECZ_GATE);
+            Door gate = Map.Doors.First(door => door.DoorName == Constant.ECZ_GATE);
             if (gate != null)
             {
                 gate.locked = lockit;
@@ -52,31 +54,29 @@ namespace EventfulLaboratory
             }
         }
 
-        public static void ForceRoundEnd(RoundSummary.LeadingTeam team)
+        public static void LockRound(bool isLocked = true)
         {
-            
-        }
-
-        private static void _ForceRoundEndProxy(ref CheckRoundEndEvent ev)
-        {
-            
+            Round.IsLocked = false;
         }
         
-        public static void LockRound()
+        public static void PreventRespawnEvent(RespawningTeamEventArgs ev)
         {
-            Map.RoundLock = true;
-        }
-        
-        public static void PreventRespawnEvent(ref TeamRespawnEvent ev)
-        {
-            ev.MaxRespawnAmt = 0;
-            ev.ToRespawn.Clear();
+            ev.NextKnownTeam = SpawnableTeamType.None;
         }
 
         public static Room GetRandomHeavyRoom()
         {
-            List<Room> hczRooms = Map.Rooms.FindAll(room => room.Name.Contains("HCZ"));
+            List<Room> hczRooms = Map.Rooms.Where(room => room.Name.Contains("HCZ")).ToList();
             return hczRooms[new Random().Next(hczRooms.Count -1)];
+        }
+
+        public static void ForceEndRound(RoleType winner)
+        {
+            Team team = Exiled.API.Extensions.Role.GetTeam(winner);
+            RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;
+            RoundSummary.escaped_scientists = team == Team.MTF ? 1 : 0;
+            RoundSummary.kills_by_scp = team == Team.SCP ? 1 : 0;
+            RoundSummary.singleton.ForceEnd();
         }
     }
 }

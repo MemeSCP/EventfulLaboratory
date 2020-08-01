@@ -1,5 +1,4 @@
 using EventfulLaboratory.structs;
-using EXILED.Patches;
 
 namespace EventfulLaboratory.slevents
 {

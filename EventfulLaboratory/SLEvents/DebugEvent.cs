@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 using EventfulLaboratory.structs;
-using EXILED;
-using EXILED.Patches;
+using Exiled.API.Features;
+using HarmonyLib;
 
 namespace EventfulLaboratory.slevents
 {
@@ -12,7 +12,8 @@ namespace EventfulLaboratory.slevents
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("Rooms: ");
-            EXILED.Extensions.Map.Rooms.ForEach(room =>
+            
+            Map.Rooms.Do(room =>
             {
                 builder.Append(room.Name).Append("-").Append(room.Position).Append(", ");
             });
@@ -23,10 +24,6 @@ namespace EventfulLaboratory.slevents
         public override void OnRoundStart()
         {
             Logger.Info("RoundStarted");
-        }
-
-        private void OnElevatorInterract(ElevatorInteractionEvent ev)
-        {
         }
 
         public override void OnRoundEnd()

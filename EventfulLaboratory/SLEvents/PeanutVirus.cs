@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using EventfulLaboratory.structs;
-using EXILED;
-using EXILED.ApiObjects;
-using EXILED.Extensions;
+using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using MEC;
 using UnityEngine;
 using Random = System.Random;
@@ -12,14 +11,14 @@ namespace EventfulLaboratory.slevents
 {
     public class PeanutVirus : AEvent
     {
-        private ReferenceHub _mainPeanut;
+        private Player _mainPeanut;
         
         public override void OnNewRound()
         {
             Common.LockRound();
 
-            Events.RoundRestartEvent += RoundRestartEvent;
-            Events.TeamRespawnEvent += Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Server.RestartingRound += RoundRestartEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
         }
 
         public override void OnRoundStart()
@@ -31,87 +30,88 @@ namespace EventfulLaboratory.slevents
         private IEnumerator<float> RoundStartEnumerator()
         {
             yield return Timing.WaitForSeconds(1f);
-            List<ReferenceHub> players = Player.GetHubs().ToList();
+            List<Player> players = Player.List.ToList();
             _mainPeanut = players[new Random().Next(players.Count)];
             Room peanutStart = Common.GetRoomByName(Constant.FOUR_NINE_CHAMBER);
             Room dStart = Common.GetRoomByName(Constant.SEVEN_NINE_CHAMBER);
-            foreach (ReferenceHub hub in players)
+            foreach (Player player in players)
             {
-                if (hub == _mainPeanut)
+                if (player == _mainPeanut)
                 {
-                    hub.SetRole(RoleType.Scp173);
+                    player.SetRole(RoleType.Scp173);
                     yield return Timing.WaitForSeconds(0.3f);
-                    hub.SetPosition(peanutStart.Position + new Vector3(0, 2));
+                    player.Position = peanutStart.Position + new Vector3(0, 2);
                     yield return Timing.WaitForSeconds(1f);
-                    hub.SetMaxHealth(4000);
-                    hub.SetHealth(1000);
+                    player.MaxHealth = 4000;
+                    player.Health  = 1000;
                 }
                 else
                 {
-                    hub.SetRole(RoleType.ClassD);
+                    player.SetRole(RoleType.ClassD);
                     yield return Timing.WaitForSeconds(0.3f);
-                    hub.SetPosition(dStart.Position + new Vector3(0, 2));
+                    player.Position = dStart.Position + new Vector3(0, 2);
                 }
             }
             yield return Timing.WaitForSeconds(0.3f);
-            Common.DisableLightElevators();
-            Events.PlayerDeathEvent += OnPeanutKillDelegate;
-            Events.PlayerSpawnEvent += OnPlayerSpawn;
+            Common.DisableElevators();
+            //Map.StartDecontamination();
+            Exiled.Events.Handlers.Player.Died += OnPeanutKillDelegate;
+            Exiled.Events.Handlers.Player.Spawning += OnPlayerSpawn;
         }
 
-        private void OnPlayerSpawn(PlayerSpawnEvent ev)
+        private void OnPlayerSpawn(SpawningEventArgs ev)
         {
             Timing.RunCoroutine(OnPlayerSpawnRoutine(ev));
         }
 
-        private IEnumerator<float> OnPlayerSpawnRoutine(PlayerSpawnEvent ev)
+        private IEnumerator<float> OnPlayerSpawnRoutine(SpawningEventArgs ev)
         {
-            yield return Timing.WaitForSeconds(0.5f);
-            if (ev.Role != RoleType.Scp173)
+            yield return Timing.WaitForSeconds(0.3f);
+            if (ev.RoleType != RoleType.Scp173)
             {
                 ev.Player.SetRole(RoleType.ClassD);
-                yield return Timing.WaitForSeconds(0.5f);
-                ev.Player.SetPosition(Common.GetRoomByName(Constant.SEVEN_NINE_CHAMBER).Position + new Vector3(0, 2));
+                yield return Timing.WaitForSeconds(0.3f);
+                ev.Player.Position = Common.GetRoomByName(Constant.SEVEN_NINE_CHAMBER).Position + new Vector3(0, 2);
             }
         }
 
-        private void OnPeanutKillDelegate(ref PlayerDeathEvent ev)
+        private void OnPeanutKillDelegate(DiedEventArgs ev)
         {
             Timing.RunCoroutine(OnPeanutKill(ev));
         }
 
-        private IEnumerator<float> OnPeanutKill(PlayerDeathEvent ev)
+        private IEnumerator<float> OnPeanutKill(DiedEventArgs ev)
         {
             if (ev.Killer == _mainPeanut)
             {
-                ev.Player.SetRole(RoleType.Scp173);
-                yield return Timing.WaitForSeconds(0.3f);
-                ev.Player.SetScale(0.5f);
-                yield return Timing.WaitForSeconds(0.3f);
-                ev.Player.SetPosition(ev.Killer.GetPosition());
-                ev.Player.SetMaxHealth(800);
-                ev.Player.SetHealth(400);
+                ev.Target.SetRole(RoleType.Scp173);
+                yield return Timing.WaitForSeconds(1f);
+                ev.Target.Scale = new Vector3(0.5f, 0.5f, 0.5f);
+                yield return Timing.WaitForSeconds(1f);
+                ev.Target.Position = ev.Killer.Position;
+                ev.Target.MaxHealth = 800;
+                ev.Target.Health = 400;
             }
             
-            if (Player.GetHubs().All(player => player.GetRole() != RoleType.ClassD))
+            if (Player.List.All(player => player.Role != RoleType.ClassD))
             {
                 Common.Broadcast(15, "All ClassD has been eliminated. SCP 173 wins!");
-                Common.ForceRoundEnd(RoundSummary.LeadingTeam.Anomalies);
+                Common.ForceEndRound(RoleType.Scp173);
             }
             
-            if (Player.GetHubs().All(player => player.GetRole() != RoleType.Scp173))
+            if (Player.List.All(player => player.Role != RoleType.Scp173))
             {
                 Common.Broadcast(15, "All SCP 173 has been eliminated. Humans win!");
-                Common.ForceRoundEnd(RoundSummary.LeadingTeam.ChaosInsurgency);
+                Common.ForceEndRound(RoleType.ClassD);
             }
         }
 
         public override void OnRoundEnd()
         {
-            Events.PlayerDeathEvent -= OnPeanutKillDelegate;
-            Events.RoundRestartEvent -= RoundRestartEvent;
-            Events.TeamRespawnEvent -= Common.PreventRespawnEvent;
-            Events.PlayerSpawnEvent -= OnPlayerSpawn;
+            Exiled.Events.Handlers.Player.Died -= OnPeanutKillDelegate;
+            Exiled.Events.Handlers.Server.RestartingRound -= RoundRestartEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Player.Spawning -= OnPlayerSpawn;
         }
 
         public void RoundRestartEvent()

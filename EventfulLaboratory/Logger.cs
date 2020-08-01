@@ -1,5 +1,4 @@
-using System.ComponentModel.Composition.Hosting;
-using EXILED;
+using Exiled.API.Features;
 
 namespace EventfulLaboratory
 {

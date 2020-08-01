@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EventfulLaboratory.structs;
-using EXILED;
-using EXILED.ApiObjects;
-using EXILED.Extensions;
+using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using MEC;
 using UnityEngine;
 using YamlDotNet.Core;
@@ -23,44 +22,44 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
-            Events.TeamRespawnEvent += Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
             Common.LockRound();
             Common.LockAllDoors();
             _shelter = Common.GetEvacuationZone();
-            Events.PlayerJoinEvent += PreRoundJoin;
+            Exiled.Events.Handlers.Player.Joined += PreRoundJoin;
             if (_shelter != null)
             {
-                foreach (ReferenceHub hub in Player.GetHubs())
+                foreach (Player player in Player.List)
                 {
-                    Timing.RunCoroutine(MovePlayerToShelter(hub));
+                    Timing.RunCoroutine(MovePlayerToShelter(player));
                 }
             }
 
             Timing.RunCoroutine(FewSecToRound());
         }
 
-        private void SendWelcomeMessage(ReferenceHub hub)
+        private void SendWelcomeMessage(Player player)
         {
-            hub.Broadcast(2, Constant.PEANUT_CHAMBER_WELCOME, false);
+            player.Broadcast(4, Constant.PEANUT_CHAMBER_WELCOME);
         }
 
-        private void PreRoundJoin(PlayerJoinEvent ev)
+        private void PreRoundJoin(JoinedEventArgs ev)
         {
             Timing.RunCoroutine(MovePlayerToShelter(ev.Player));
         }
 
-        private void OnKill(ref PlayerDeathEvent ev)
+        private void OnKill(DiedEventArgs ev)
         {
-            ReferenceHub dboy = null;
-            foreach (ReferenceHub hub in Player.GetHubs())
+            Player dboy = null;
+            foreach (Player player in Player.List)
             {
-                if (hub == ev.Player || hub == ev.Killer) continue;
-                if (hub.GetRole() == RoleType.ClassD)
+                if (player == ev.Target || player == ev.Killer) continue;
+                if (player.Role == RoleType.ClassD)
                 {
                     if (dboy == null)
                     {
                         //Found 1 dboy
-                        dboy = hub;
+                        dboy = player;
                     }
                     else
                     {
@@ -72,27 +71,27 @@ namespace EventfulLaboratory.slevents
             //Only 0/1 dboy exists
             if (dboy != null)
             {
-                dboy.Broadcast(3, Constant.PEANUT_CHAMBER_DBOY_WIN, false);
-                foreach (ReferenceHub hub in Player.GetHubs())
+                dboy.Broadcast(3, Constant.PEANUT_CHAMBER_DBOY_WIN);
+                foreach (Player player in Player.List)
                 {
-                    if (hub.GetRole() == RoleType.Spectator || hub == ev.Player)
+                    if (player.Role == RoleType.Spectator || player == ev.Target)
                     {
-                        Timing.RunCoroutine(SetPeanutCoroutine(hub));
-                        hub.Broadcast(3, Constant.PEANUT_CHAMBER_DBOY_ELLAMINATE, false);
+                        Timing.RunCoroutine(SetPeanutCoroutine(player));
+                        player.Broadcast(3, Constant.PEANUT_CHAMBER_DBOY_ELLAMINATE);
                     }
                 }
             }
             else
             {
                 Common.Broadcast(3, Constant.PEANUT_CHAMBER_END);
-                Map.RoundLock = false;
+                Common.LockRound(false);
             }
         }
 
         public override void OnRoundEnd()
         {
-            Events.PlayerDeathEvent -= OnKill;
-            Events.TeamRespawnEvent -= Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Player.Died -= OnKill;
+            Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
         }
 
         public override void Enable()
@@ -122,35 +121,35 @@ namespace EventfulLaboratory.slevents
             TheRound();
         }
         
-        private IEnumerator<float> MovePlayerToShelter(ReferenceHub hub)
+        private IEnumerator<float> MovePlayerToShelter(Player player)
         {
             yield return Timing.WaitForSeconds(1.5f);
-            hub.SetRole(RoleType.ClassD);
+            player.SetRole(RoleType.ClassD);
             yield return Timing.WaitForSeconds(0.5f);
-            hub.SetPosition(_shelter.Position + new Vector3(0, 2, 0));
-            SendWelcomeMessage(hub);
+            player.Position = _shelter.Position + new Vector3(0, 2, 0);
+            SendWelcomeMessage(player);
         }
         
         private void TheRound()
         {
-            EXILED.Events.PlayerJoinEvent -= PreRoundJoin;
-            List<ReferenceHub> players = Player.GetHubs().ToList();
-            ReferenceHub thePeanut = players[new Random().Next(players.Count)];
+            Exiled.Events.Handlers.Player.Joined -= PreRoundJoin;
+            List<Player> players = Player.List.ToList();
+            Player thePeanut = players[new Random().Next(players.Count)];
             players.Remove(thePeanut);
             Timing.RunCoroutine(SetPeanutCoroutine(thePeanut));
-            players.ForEach(player => player.Broadcast(4, Constant.PEANUT_CHAMBER_DCLASS_WARN, false));
-            EXILED.Events.PlayerDeathEvent += OnKill;
+            players.ForEach(player => player.Broadcast(4, Constant.PEANUT_CHAMBER_DCLASS_WARN));
+            Exiled.Events.Handlers.Player.Died += OnKill;
         }
 
-        private IEnumerator<float> SetPeanutCoroutine(ReferenceHub hub)
+        private IEnumerator<float> SetPeanutCoroutine(Player player)
         {
             yield return Timing.WaitForSeconds(0.3f);
-            hub.SetRole(RoleType.Scp173);
+            player.SetRole(RoleType.Scp173);
             yield return Timing.WaitForSeconds(0.3f);
-            hub.SetPosition(_shelter.Position + new Vector3(0, 2, 0));
-            hub.SetMaxHealth(2500);
-            hub.SetHealth(1000);
-            hub.Broadcast(15, Constant.PEANUT_CHAMBER_173_WARN, false);
+            player.Position = _shelter.Position + new Vector3(0, 2, 0);
+            player.MaxHealth = 2500;
+            player.Health = 1000;
+            player.Broadcast(15, Constant.PEANUT_CHAMBER_173_WARN);
         }
     }
 }

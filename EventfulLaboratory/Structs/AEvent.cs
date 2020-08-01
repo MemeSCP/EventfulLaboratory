@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using EventfulLaboratory.slevents;
-using EXILED.Patches;
 using Random = Unity.Mathematics.Random;
 
 namespace EventfulLaboratory.structs
@@ -21,7 +20,7 @@ namespace EventfulLaboratory.structs
                 case LabEvents.FreezeTag:
                     return new FreezeTag();
                 default:
-                    if (Plugin.DEBUG)
+                    if (EventfulLab.Instance.Config.DebugMode)
                         return new DebugEvent();
                     else
                         return new BlankEvent();

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using EventfulLaboratory.structs;
-using EXILED;
-using EXILED.ApiObjects;
-using EXILED.Extensions;
+using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using MEC;
 using UnityEngine;
 
@@ -22,10 +21,10 @@ namespace EventfulLaboratory.slevents
             Common.LockRound();
             Common.LockAllDoors();
             _shelter = Common.GetEvacuationZone();
-            Events.PlayerJoinEvent += PreRoundJoin;
+            Exiled.Events.Handlers.Player.Joined += PreRoundJoin;
             if (_shelter != null)
             {
-                foreach (ReferenceHub hub in Player.GetHubs())
+                foreach (Player hub in Player.List)
                 {
                     Timing.RunCoroutine(MovePlayerToShelter(hub));
                 }
@@ -34,7 +33,7 @@ namespace EventfulLaboratory.slevents
             //Timing.RunCoroutine(FewSecToRound());
         }
         
-        private void PreRoundJoin(PlayerJoinEvent ev)
+        private void PreRoundJoin(JoinedEventArgs ev)
         {
             Timing.RunCoroutine(MovePlayerToShelter(ev.Player));
         }
@@ -59,12 +58,12 @@ namespace EventfulLaboratory.slevents
             //NOOP
         }
 
-        private IEnumerator<float> MovePlayerToShelter(ReferenceHub hub)
+        private IEnumerator<float> MovePlayerToShelter(Player player)
         {
             yield return Timing.WaitForSeconds(1.5f);
-            hub.SetRole(RoleType.ClassD);
+            player.SetRole(RoleType.ClassD);
             yield return Timing.WaitForSeconds(0.5f);
-            hub.SetPosition(_shelter.Position + new Vector3(0, 2, 0));
+            player.Position = _shelter.Position + new Vector3(0, 2, 0);
         }
     }
 }
