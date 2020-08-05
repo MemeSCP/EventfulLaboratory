@@ -6,7 +6,7 @@ namespace EventfulLaboratory
     {
         public static void Info(string text)
         {
-            Log.Warn(Constant.SHORTFORM + "#" + text);
+            Log.Info(Constant.SHORTFORM + "#" + text);
         }
 
         public static void Error(string text)

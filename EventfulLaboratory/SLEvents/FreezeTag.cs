@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Cryptography.Xml;
 using CustomPlayerEffects;
 using EventfulLaboratory.structs;
 using Exiled.API.Extensions;

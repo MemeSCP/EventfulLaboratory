@@ -2,6 +2,9 @@
 using CommandSystem;
 using EventfulLaboratory.slevents;
 using EventfulLaboratory.structs;
+using Exiled.Events.Handlers;
+using Exiled.Permissions.Extensions;
+using Player = Exiled.API.Features.Player;
 
 namespace EventfulLaboratory.Commands
 {
@@ -10,7 +13,17 @@ namespace EventfulLaboratory.Commands
     {
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!(sender as CommandSender).CheckPermission("el.event"))
+            {
+                response = "No permission!";
+                return false;
+            }
             LabEvents evnt;
+            if (arguments.Count == 0)
+            {
+                response = "Avaliable events: //TODO";
+                return true;
+            }
             if (!Enum.TryParse(arguments.At(0), out evnt))
             {
                 response = "First argument is not a number! Please provide a valid eventId. (cmd: event <number>)";
