@@ -173,10 +173,11 @@ namespace EventfulLaboratory.slevents
             {
                 player.AddItem(item);
             }
-            player.SetAmmo(AmmoType.Nato9, 3000);
-            player.SetAmmo(AmmoType.Nato556, 3000);
-            player.SetAmmo(AmmoType.Nato762, 3000);
+            player.Ammo[(int)AmmoType.Nato9] = 3000;
+            player.Ammo[(int)AmmoType.Nato556] = 3000;
+            player.Ammo[(int)AmmoType.Nato762] = 3000;
             
+            //TODO: Attachments blacklist
             Inventory.SyncItemInfo sif = new Inventory.SyncItemInfo
             {
                 id = _roundWeapon,
@@ -221,16 +222,21 @@ namespace EventfulLaboratory.slevents
             {
                 kdaString = "/0|0/";
             }
-            string text = player.GroupName;
+            string text = player.RankName;
+            if (text == null)
+            {
+                text = "";
+            }
             if (text.Contains("/"))
             {
                 text = text.Split('/')[2];
             }
-            player.GroupName = $"{kdaString} {text}";
+            player.RankName = $"{kdaString} {text}";
         }
 
         private void SpawnPlayer(Player player)
         {
+            
             Timing.RunCoroutine(SpawnHubAsParameter(player,
                 (player.Id % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency)));
             player.Broadcast(5, "First team to get " + _maxScore + " kills win the round!");

@@ -31,6 +31,7 @@ namespace EventfulLaboratory.slevents
             {
                 foreach (Player player in Player.List)
                 {
+                    //Move to 173 chamber
                     Timing.RunCoroutine(MovePlayerToShelter(player));
                 }
             }

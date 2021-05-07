@@ -2,13 +2,12 @@
 using CommandSystem;
 using EventfulLaboratory.slevents;
 using EventfulLaboratory.structs;
-using Exiled.Events.Handlers;
 using Exiled.Permissions.Extensions;
-using Player = Exiled.API.Features.Player;
 
 namespace EventfulLaboratory.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
+    [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class SetEvent : ICommand
     {
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)

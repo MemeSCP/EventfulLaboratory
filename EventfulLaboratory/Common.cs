@@ -2,15 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dissonance;
+using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using Respawning;
+using YamlDotNet.Core;
+using String = System.String;
 
 namespace EventfulLaboratory
 {
     public class Common
     {
+        private static Random rng = new Random();
+        
         //TODO: Make it per-round getsetter
         [CanBeNull]
         public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
@@ -23,16 +29,16 @@ namespace EventfulLaboratory
             foreach (Player hub in Player.List)
             {
                 if (force) hub.ClearBroadcasts();
-                hub.Broadcast(timing, text);
+                hub.ShowHint(text, timing);
+                //hub.Broadcast(timing, text);
             }
         }
         
         public static void LockAllDoors()
         {
-            foreach (Door door in Map.Doors)
+            foreach (DoorVariant door in Map.Doors)
             {
-                door.lockdown = true;
-                door.UpdateLock();
+                door.ServerChangeLock(DoorLockReason.AdminCommand, true);
             }
         }
 
@@ -46,17 +52,18 @@ namespace EventfulLaboratory
 
         public static void ToggleLockEntranceGate(bool lockit = true)
         {
-            Door gate = Map.Doors.First(door => door.DoorName == Constant.ECZ_GATE);
-            if (gate != null)
+            foreach (DoorVariant door in Map.Doors)
             {
-                gate.locked = lockit;
-                gate.UpdateLock();
+                if (door.name == Constant.ECZ_GATE)
+                {
+                    door.ServerChangeLock(DoorLockReason.AdminCommand, lockit);
+                }
             }
         }
 
         public static void LockRound(bool isLocked = true)
         {
-            Round.IsLocked = false;
+            Round.IsLocked = isLocked;
         }
         
         public static void PreventRespawnEvent(RespawningTeamEventArgs ev)
@@ -66,8 +73,13 @@ namespace EventfulLaboratory
 
         public static Room GetRandomHeavyRoom()
         {
-            List<Room> hczRooms = Map.Rooms.Where(room => room.Name.Contains("HCZ")).ToList();
-            return hczRooms[new Random().Next(hczRooms.Count -1)];
+            List<Room> hczRooms = Map.Rooms.Where(room => 
+                room.Name.Contains("HCZ") && 
+                !room.Name.Contains("Tesla") && 
+                !room.Name.Contains("EZ_Checkpoint") &&
+                !room.Name.Contains("049")
+                ).ToList();
+            return hczRooms[rng.Next(hczRooms.Count -1)];
         }
 
         public static void ForceEndRound(RoleType winner)
@@ -76,7 +88,19 @@ namespace EventfulLaboratory
             RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;
             RoundSummary.escaped_scientists = team == Team.MTF ? 1 : 0;
             RoundSummary.kills_by_scp = team == Team.SCP ? 1 : 0;
+            foreach (var player in Player.List)
+            {
+                player.SetRole(winner);
+            }
             RoundSummary.singleton.ForceEnd();
+        }
+
+        public static void ToggleTeslats(Boolean state = false)
+        {
+            foreach (var teslaGate in Map.TeslaGates)
+            {
+                teslaGate.enabled = state;
+            }
         }
     }
 }

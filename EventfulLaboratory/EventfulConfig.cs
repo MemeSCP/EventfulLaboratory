@@ -9,5 +9,7 @@ namespace EventfulLaboratory
         public bool DebugMode { get; set; } = false;
 
         public bool RandomEvents { get; set; } = false;
+
+        public int PermanentEvents { get; set; } = 0;
     }
 }

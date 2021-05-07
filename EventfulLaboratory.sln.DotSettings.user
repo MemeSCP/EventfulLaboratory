@@ -1,4 +1,12 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CExiled_002ELoader_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005Cdependencies_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005Cdependencies_005CExiled_002EAPI_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005Cdependencies_005CSystem_002EComponentModel_002EDataAnnotations_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005Cdependencies_005CYamlDotNet_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005CExiled_002EEvents_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005CExiled_002EPermissions_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CAppData_005CRoaming_005CEXILED_005CPlugins_005CExiled_002EUpdater_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CDownloads_005CExiled_0020_00282_0029_002Etar_005CExiled_0020_00282_0029_005CAssembly_002DCSharp_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CDownloads_005CExiled_0020_00282_0029_002Etar_005CExiled_0020_00282_0029_005CEXILED_005CExiled_002ELoader_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CSqbika_005CDownloads_005CExiled_0020_00282_0029_002Etar_005CExiled_0020_00282_0029_005CEXILED_005CPlugins_005Cdependencies_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean>
@@ -276,11 +284,149 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Frun_002Fmedia_002Fsqbika_002FSQBIKAPNDR2_002FEventfulLaboratory_002FSCPSL_005FData_002FManaged_002FUnityEngine_002EXRModule_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Frun_002Fmedia_002Fsqbika_002FSQBIKAPNDR2_002FEventfulLaboratory_002FSCPSL_005FData_002FManaged_002Fzxing_002Eunity_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
-  &lt;Assembly Path="G:\EventfulLaboratory\EXILED\EXILED\Plugins\dependencies\0Harmony.dll" /&gt;&#xD;
-  &lt;Assembly Path="\home\sqbika\Dev\EventfulLaboratory\EventfulLaboratory\bin\Debug\Assembly-CSharp.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\Users\Sqbika\Downloads\Exiled (2).tar\Exiled (2)\EXILED\Plugins\dependencies\Exiled.API.dll" /&gt;&#xD;
-  &lt;Assembly Path="E:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll" /&gt;&#xD;
-  &lt;Assembly Path="E:\dev\EventfulLaboratory\EventfulLaboratory\bin\Debug\EXILED.dll" /&gt;&#xD;
-  &lt;Assembly Path="E:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\CommandSystem.Core.dll" /&gt;&#xD;
-  &lt;Assembly Path="E:\dev\EventfulLaboratory\packages\EXILED.2.0.10\lib\net472\Exiled.Permissions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.API.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.Bootstrap.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.CreditTags.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.CustomItems.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.Events.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.Loader.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.Permissions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\dev\EventfulLaboratory\packages\EXILED.2.10.0-beta\lib\net472\Exiled.Updater.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Accessibility.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\AmplifyBloom.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\BouncyCastle.Crypto.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\ch.sycoforge.Decal.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\ch.sycoforge.Logging.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\ch.sycoforge.Unity.Runtime.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\CloudflareSolverRe.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\CommandSystem.Core.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\DissonanceVoip.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Facepunch.Steamworks.Win64.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.Authenticators.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.Components.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.CecilX.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.CecilX.Mdb.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.CecilX.Pdb.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.CecilX.Rocks.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.Data.Sqlite.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.Nat.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.Posix.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.Security.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mono.WebBrowser.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\mscorlib.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\netstandard.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\NorthwoodLib.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Novell.Directory.Ldap.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Buffers.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Collections.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.ComponentModel.Composition.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.ComponentModel.DataAnnotations.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Configuration.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Core.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Data.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Design.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Diagnostics.Debug.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Diagnostics.StackTrace.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.DirectoryServices.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Drawing.Design.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Drawing.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.EnterpriseServices.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Globalization.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Globalization.Extensions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.IO.Compression.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.IO.Compression.FileSystem.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Linq.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Memory.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Net.Http.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Net.Primitives.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Numerics.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Numerics.Vectors.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.CompilerServices.Unsafe.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.Extensions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.Serialization.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.Serialization.Formatters.Soap.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.Serialization.Xml.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Security.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.ServiceModel.Internals.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Text.RegularExpressions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Threading.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Threading.Tasks.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Transactions.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Web.ApplicationServices.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Web.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Web.Services.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Windows.Forms.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Xml.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Xml.Linq.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Xml.XPath.XDocument.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Telepathy.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Unity.Mathematics.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Unity.TextMeshPro.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AccessibilityModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AIModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AndroidJNIModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AnimationModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ARModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AssetBundleModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AudioModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ClothModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ClusterInputModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ClusterRendererModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CoreModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CrashReportingModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.DirectorModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.DSPGraphModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.GameCenterModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.GridModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.HotReloadModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ImageConversionModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.IMGUIModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.InputLegacyModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.InputModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.JSONSerializeModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.LocalizationModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ParticleSystemModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.PerformanceReportingModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.Physics2DModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.PhysicsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ProfilerModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.ScreenCaptureModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.SharedInternalsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.SpriteMaskModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.SpriteShapeModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.StreamingModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.SubstanceModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.SubsystemsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TerrainModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TerrainPhysicsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TextCoreModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TextRenderingModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TilemapModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.TLSModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UI.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UIElementsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UIModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UmbraModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UNETModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityAnalyticsModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityConnectModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityTestProtocolModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityWebRequestModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.VehiclesModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.VFXModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.VideoModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.VRModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.WindModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.XRModule.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\STEAMGAMES\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\zxing.unity.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

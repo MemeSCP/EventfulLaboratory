@@ -21,7 +21,7 @@ namespace EventfulLaboratory
         {
             if (_eventCandidate == null)
             {
-                _eventCandidate = new DebugEvent();
+                _eventCandidate = AEvent.GetEvent((LabEvents)Config.PermanentEvents);
             }
             
             Exiled.Events.Handlers.Server.WaitingForPlayers += OnNewRound;
@@ -50,13 +50,13 @@ namespace EventfulLaboratory
 
         private void OnNewRound()
         {
-            if (Config.DebugMode && NextEvent == null)
+            if (Config.RandomEvents)
             {
                 NextEvent = AEvent.GetRandomEvent();
             }
-            if (NextEvent != null)
+            else if (NextEvent != null)
             {
-                _eventCandidate.Disable();
+                _eventCandidate?.Disable();
                 _eventCandidate = NextEvent;
                 NextEvent = null;
                 _eventCandidate.Enable();
