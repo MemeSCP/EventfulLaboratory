@@ -9,7 +9,6 @@ using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using Respawning;
 using YamlDotNet.Core;
-using String = System.String;
 
 namespace EventfulLaboratory
 {
@@ -21,7 +20,7 @@ namespace EventfulLaboratory
         [CanBeNull]
         public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
         
-        public static Room GetRoomByName(String roomName) =>
+        public static Room GetRoomByName(string roomName) =>
             Map.Rooms.First(room => room.Name == roomName);
 
         public static void Broadcast(ushort timing, string text, bool force = false)
