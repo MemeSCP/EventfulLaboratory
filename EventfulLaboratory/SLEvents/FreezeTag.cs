@@ -16,18 +16,12 @@ namespace EventfulLaboratory.slevents
 {
     public class FreezeTag : AEvent
     {
-        
         //TODO: Players into hashMap
 
         private readonly RoleType _ntfRole = RoleType.NtfLieutenant;
         private readonly RoleType _chaosRole = RoleType.ChaosInsurgency;
         
-
         private Dictionary<int, RoleType> _userIdToRole;
-        public override void OnNewRound()
-        {
-            //NOOP
-        }
 
         public override void OnRoundStart()
         {
@@ -67,11 +61,6 @@ namespace EventfulLaboratory.slevents
             Disable();
         }
 
-        public override void Enable()
-        {
-            
-        }
-
         public override void Disable()
         {
             Exiled.Events.Handlers.Player.Hurting -= OnPlayerHurtProxy;
@@ -79,11 +68,6 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
         }
 
-        public override void Reload()
-        {
-            
-        }
-        
         private RoleType DetermineNextSpawn()
         {
             int chaos = 0, ntf = 0;
@@ -121,7 +105,6 @@ namespace EventfulLaboratory.slevents
         
         private IEnumerator<float> RandomPlayerSpawn(Player player, RoleType role)
         {
-            
             player.Items.Clear();
             
             yield return Timing.WaitUntilDone(SpawnHubAsParameter(player, role));

@@ -11,11 +11,6 @@ namespace EventfulLaboratory.slevents
     {
         private Room _shelter;
         
-        public override void OnNewRound()
-        {
-            //NOOP
-        }
-
         public override void OnRoundStart()
         {
             Common.LockRound();
@@ -36,26 +31,6 @@ namespace EventfulLaboratory.slevents
         private void PreRoundJoin(JoinedEventArgs ev)
         {
             Timing.RunCoroutine(MovePlayerToShelter(ev.Player));
-        }
-
-        public override void OnRoundEnd()
-        {
-            
-        }
-
-        public override void Enable()
-        {
-            //NOOP
-        }
-
-        public override void Disable()
-        {
-            //NOOP
-        }
-
-        public override void Reload()
-        {
-            //NOOP
         }
 
         private IEnumerator<float> MovePlayerToShelter(Player player)

@@ -15,11 +15,6 @@ namespace EventfulLaboratory.slevents
     {
         private Room _shelter;
         
-        public override void OnNewRound()
-        {
-            //noop
-        }
-
         public override void OnRoundStart()
         {
             Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
@@ -95,19 +90,9 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
         }
 
-        public override void Enable()
-        {
-            
-        }
-
         public override void Disable()
         {
             OnRoundEnd();
-        }
-
-        public override void Reload()
-        {
-            
         }
         
         private IEnumerator<float> FewSecToRound()

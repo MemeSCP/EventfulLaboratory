@@ -194,7 +194,7 @@
     <Reference Include="Telepathy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(SL_MANAGED_DLLS)\Telepathy.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Mathematics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Unity.Mathematics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(SL_MANAGED_DLLS)\Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">

@@ -1,10 +1,17 @@
 using System;
 using System.Linq;
+using System.Text;
+
 using EventfulLaboratory.slevents;
+
+using Exiled.API.Features;
+
+using HarmonyLib;
+
 using Random = Unity.Mathematics.Random;
 
 namespace EventfulLaboratory.structs
-{ 
+{
     public abstract class AEvent
     {
         public static AEvent GetEvent(LabEvents labEvents)
@@ -29,24 +36,47 @@ namespace EventfulLaboratory.structs
 
         public static AEvent GetRandomEvent()
         {
-            return GetEvent((LabEvents)new Random().NextInt(1, Enum.GetValues(typeof(LabEvents)).Length));
+            return GetEvent((LabEvents) new Random().NextInt(1, Enum.GetValues(typeof(LabEvents)).Length));
         }
 
         public string GetName()
         {
             return GetType().Name.Split('.').Last();
         }
-        
-        public abstract void OnNewRound();
-        
-        public abstract void OnRoundStart();
 
-        public abstract void OnRoundEnd();
+        public virtual void OnNewRound()
+        {
+            var builder = new StringBuilder();
+            builder.Append("Rooms: ");
 
-        public abstract void Enable();
+            Map.Rooms.Do(room => { builder.Append(room.Name).Append("-").Append(room.Position).Append(", "); });
+            Logger.Debug(builder.ToString());
+            Logger.Debug("NewRound");
+        }
 
-        public abstract void Disable();
+        public virtual void OnRoundStart()
+        {
+            Logger.Debug("RoundStarted");
+        }
 
-        public abstract void Reload();
+        public virtual void OnRoundEnd()
+        {
+            Logger.Debug("RoundEnd");
+        }
+
+        public virtual void Enable()
+        {
+            Logger.Debug("Enabled");
+        }
+
+        public virtual void Disable()
+        {
+            Logger.Debug("Disabled");
+        }
+
+        public virtual void Reload()
+        {
+            Logger.Debug("Reload");
+        }
     }
 }

@@ -119,19 +119,9 @@ namespace EventfulLaboratory.slevents
             OnRoundEnd();
         }
 
-        public override void Enable()
-        {
-            //NOOP
-        }
-
         public override void Disable()
         {
             OnRoundEnd();
-        }
-
-        public override void Reload()
-        {
-            //NOOP
         }
     }
 }
