@@ -57,11 +57,9 @@ namespace EventfulLaboratory.slevents
                 }
             }
             Exiled.Events.Handlers.Player.Hurting += OnPlayerHurtProxy;
-            //Exiled.Events.Handlers.Player.Died += OnPlayerDeathProxy;
             Exiled.Events.Handlers.Player.Handcuffing += OnCuffEvent;
             Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
-            Exiled.Events.Handlers.Player.Spawning += ev => Timing.RunCoroutine(SpawnHubAsParameter(ev.Player,
-                ev.Player.Id % 2 == 1 ? _chaosRole : _ntfRole));
+            Exiled.Events.Handlers.Player.Spawning += ev => Timing.RunCoroutine(SpawnHubAsParameter(ev.Player, GetRoleType(ev.Player)));
         }
 
         public override void OnRoundEnd()
@@ -77,7 +75,6 @@ namespace EventfulLaboratory.slevents
         public override void Disable()
         {
             Exiled.Events.Handlers.Player.Hurting -= OnPlayerHurtProxy;
-            //Exiled.Events.Handlers.Player.Died -= OnPlayerDeathProxy;
             Exiled.Events.Handlers.Player.Handcuffing -= OnCuffEvent;
             Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
         }
@@ -87,6 +84,76 @@ namespace EventfulLaboratory.slevents
             
         }
         
+        private RoleType DetermineNextSpawn()
+        {
+            int chaos = 0, ntf = 0;
+            foreach (var pair1 in _userIdToRole)
+            {
+                if (pair1.Value == _chaosRole) chaos++;
+                if (pair1.Value == _ntfRole) ntf++;
+            }
+
+            return (chaos > ntf) ? _chaosRole : _ntfRole;
+        }
+
+        private RoleType GetRoleType(Player player)
+        {
+            if (!_userIdToRole.ContainsKey(player.Id))
+            {
+                _userIdToRole[player.Id] = DetermineNextSpawn();
+            }
+
+            return _userIdToRole[player.Id];
+        }
+
+        private RoleType DetermineThawedRole(RoleType role)
+        {
+            return role == _chaosRole ? RoleType.Scientist : RoleType.ClassD;
+        }
+        
+        #region Proxies
+        
+        private void OnPlayerHurtProxy(HurtingEventArgs ev) => Timing.RunCoroutine(OnPlayerHurt(ev));
+        
+        #endregion
+        
+        #region Spawning
+        
+        private IEnumerator<float> RandomPlayerSpawn(Player player, RoleType role)
+        {
+            
+            player.Items.Clear();
+            
+            yield return Timing.WaitUntilDone(SpawnHubAsParameter(player, role));
+            yield return Timing.WaitForSeconds(1f);
+            player.RestoreWalking();
+            player.Position = Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0);
+        }
+        
+        private IEnumerator<float> RandomPlayerRespawn(Player player)
+        {
+            yield return Timing.WaitUntilDone(RandomPlayerSpawn(player, GetRoleType(player)));
+        }
+
+        private IEnumerator<float> SpawnPlayerAsThawed(Player player)
+        {
+            RoleType targetRole = DetermineThawedRole(GetRoleType(player));
+            Vector3 loc = player.Position;
+            
+            player.Items.Clear();
+            
+            player.SetRole(targetRole);
+            yield return Timing.WaitForSeconds(1f);
+            
+            player.Items.Clear();
+            
+            player.Position = loc;
+                
+            player.SetAlmostInvincible();
+            player.PreventWalking();
+
+            player.CufferId = -2;
+        }
         private IEnumerator<float> SpawnHubAsParameter(Player player, RoleType role)
         {
             yield return Timing.WaitForSeconds(0.3f);
@@ -99,9 +166,9 @@ namespace EventfulLaboratory.slevents
             
             player.SetAlmostInvincible();
         }
-
-        private void OnPlayerHurtProxy(HurtingEventArgs ev) => Timing.RunCoroutine(OnPlayerHurt(ev));
-
+        
+        #endregion
+        
         private IEnumerator<float> OnPlayerHurt(HurtingEventArgs ev)
         {
             ev.IsAllowed = false;
@@ -158,16 +225,6 @@ namespace EventfulLaboratory.slevents
 
             ev.IsAllowed = false;
         }
-
-        /*private void OnPlayerDeathProxy(DiedEventArgs ev) => Timing.RunCoroutine(OnPlayerDeath(ev));
-
-        private IEnumerator<float> OnPlayerDeath(DiedEventArgs ev)
-        {
-            return 
-                ev.Target.IsChaosOrMTF() ? 
-                    SpawnPlayerAsThawed(ev.Target) : 
-                    RandomPlayerRespawn(ev.Target);
-        }*/
         
         private void OnCuffEvent(HandcuffingEventArgs ev)
         {
@@ -190,42 +247,6 @@ namespace EventfulLaboratory.slevents
             }
         }
 
-        private IEnumerator<float> RandomPlayerRespawn(Player player)
-        {
-            yield return Timing.WaitUntilDone(RandomPlayerSpawn(player, GetRoleType(player)));
-        }
-
-        private IEnumerator<float> RandomPlayerSpawn(Player player, RoleType role)
-        {
-            
-            player.Items.Clear();
-            
-            yield return Timing.WaitUntilDone(SpawnHubAsParameter(player, role));
-            yield return Timing.WaitForSeconds(1f);
-            player.RestoreWalking();
-            player.Position = Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0);
-        }
-
-        private IEnumerator<float> SpawnPlayerAsThawed(Player player)
-        {
-            RoleType targetRole = DetermineThawedRole(GetRoleType(player));
-            Vector3 loc = player.Position;
-            
-            player.Items.Clear();
-            
-            player.SetRole(targetRole);
-            yield return Timing.WaitForSeconds(1f);
-            
-            player.Items.Clear();
-            
-            player.Position = loc;
-                
-            player.SetAlmostInvincible();
-            player.PreventWalking();
-
-            player.CufferId = -2;
-        }
-
         private void AnnounceThawing(Player thawer, Player target, string color1, string color2)
         {
             Common.Broadcast(5,
@@ -238,33 +259,6 @@ namespace EventfulLaboratory.slevents
             Common.Broadcast(5,
                 $"<color={color1}>{target.Nickname}</color> has been <size=30>unthawed</size> by <color={color2}>{thawer.Nickname}</color>!",
                 true);
-        }
-
-        private RoleType DetermineNextSpawn()
-        {
-            int chaos = 0, ntf = 0;
-            foreach (var pair1 in _userIdToRole)
-            {
-                if (pair1.Value == _chaosRole) chaos++;
-                if (pair1.Value == _ntfRole) ntf++;
-            }
-
-            return (chaos > ntf) ? _chaosRole : _ntfRole;
-        }
-
-        private RoleType GetRoleType(Player player)
-        {
-            if (!_userIdToRole.ContainsKey(player.Id))
-            {
-                _userIdToRole[player.Id] = DetermineNextSpawn();
-            }
-
-            return _userIdToRole[player.Id];
-        }
-
-        private RoleType DetermineThawedRole(RoleType role)
-        {
-            return role == _chaosRole ? RoleType.Scientist : RoleType.ClassD;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace EventfulLaboratory
         private static AEvent _eventCandidate;
         public static AEvent NextEvent { get; set; }
 
-    public override void OnEnabled()
+        public override void OnEnabled()
         {
             if (_eventCandidate == null)
             {
@@ -27,7 +27,6 @@ namespace EventfulLaboratory
             Exiled.Events.Handlers.Server.WaitingForPlayers += OnNewRound;
             Exiled.Events.Handlers.Server.RoundStarted += OnRoundStart;
             Exiled.Events.Handlers.Server.RoundEnded += OnRoundEnd;
-            _eventCandidate.Enable();
         }
 
         public override void OnDisabled()

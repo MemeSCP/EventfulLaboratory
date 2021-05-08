@@ -8,7 +8,7 @@ namespace EventfulLaboratory.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
-    public class SetEvent : ICommand
+    internal sealed class SetEvent : ICommand
     {
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
@@ -20,7 +20,11 @@ namespace EventfulLaboratory.Commands
             LabEvents evnt;
             if (arguments.Count == 0)
             {
-                response = "Avaliable events: //TODO";
+                response = "Avaliable events:";
+                foreach (var ev in Enum.GetNames(typeof(LabEvents)))
+                {
+                    response += "\n" + ev + ": " + Enum.Parse(typeof(LabEvents), ev);
+                }
                 return true;
             }
             if (!Enum.TryParse(arguments.At(0), out evnt))

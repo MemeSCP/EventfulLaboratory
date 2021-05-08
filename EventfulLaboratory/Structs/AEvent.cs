@@ -29,10 +29,10 @@ namespace EventfulLaboratory.structs
 
         public static AEvent GetRandomEvent()
         {
-            return GetEvent((LabEvents)new Random().NextInt(1, 4));
+            return GetEvent((LabEvents)new Random().NextInt(1, Enum.GetValues(typeof(LabEvents)).Length));
         }
 
-        public String GetName()
+        public string GetName()
         {
             return GetType().Name.Split('.').Last();
         }
