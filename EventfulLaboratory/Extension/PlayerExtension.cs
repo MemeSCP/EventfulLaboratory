@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 
@@ -27,5 +28,13 @@ namespace EventfulLaboratory.Extension
 
         public static Boolean IsChaosOrMTF(this Player player) =>
             player.Role.GetTeam() == Team.CHI || player.Role.GetTeam() == Team.MTF;
+
+
+        public static void UpdateRankColorToRole(this Player player) => player.UpdateRankColorToRole(player.Role);
+        
+        public static void UpdateRankColorToRole(this Player player, RoleType role)
+        {
+            player.RankColor = player.ReferenceHub.serverRoles.NamedColors.FirstOrDefault(color => !color.Restricted && color.ColorHex == role.GetColor().ToHex())?.Name ?? player.RankColor;
+        }
     }
 }

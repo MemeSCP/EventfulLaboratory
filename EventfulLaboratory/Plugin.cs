@@ -49,11 +49,11 @@ namespace EventfulLaboratory
 
         private void OnNewRound()
         {
-            if (Config.RandomEvents)
+            if (Config.RandomEvents && NextEvent == null)
             {
                 NextEvent = AEvent.GetRandomEvent();
             }
-            else if (NextEvent != null)
+            if (NextEvent != null)
             {
                 _eventCandidate?.Disable();
                 _eventCandidate = NextEvent;

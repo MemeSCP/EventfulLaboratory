@@ -1,21 +1,27 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using EventfulLaboratory.Extension;
+using EventfulLaboratory.Handler;
 using EventfulLaboratory.structs;
 
 using Exiled.API.Enums;
+using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 
 using MEC;
-
+using UnityEngine;
+using UnityEngine.UI;
+using Random = System.Random;
 using Server = Exiled.Events.Handlers.Server;
 
 namespace EventfulLaboratory.slevents
 {
     public class TeamWarfare : AEvent
     {
+        private const RoleType _team1 = RoleType.NtfLieutenant;
+        private const RoleType _team2 = RoleType.ChaosInsurgency;
+
         private static Random _rng;
 
         private static ItemType _roundWeapon;
@@ -40,13 +46,14 @@ namespace EventfulLaboratory.slevents
         };
 
         private static int _maxScore = 50;
+        
         private int _chaosKills;
-
-        private Dictionary<int, Tuple<int, int>> _kda;
-
         private int _ntfKills;
 
+        private Dictionary<int, KdaHolder> _kda;
 
+        private EvenTeamSplitHandler _teamHandler;
+        
         public override void OnNewRound()
         {
             _rng = new Random();
@@ -54,7 +61,9 @@ namespace EventfulLaboratory.slevents
             _attachments[0] = _rng.Next(3);
             _attachments[1] = _rng.Next(4);
             _attachments[2] = _rng.Next(4);
-            _kda = new Dictionary<int, Tuple<int, int>>();
+            _kda = new Dictionary<int, KdaHolder>();
+
+            _teamHandler = new EvenTeamSplitHandler(_team1, _team2, true);
 
             Server.RestartingRound += OnRoundRestart;
         }
@@ -65,10 +74,10 @@ namespace EventfulLaboratory.slevents
             Common.LockRound();
             _ntfKills = 0;
             _chaosKills = 0;
+            
             foreach (var player in Player.List)
             {
-                Timing.RunCoroutine(SpawnHubAsParameter(player,
-                    player.Id % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency));
+                Timing.RunCoroutine(SpawnPlayer(player));
                 player.Broadcast(5, "Welcome to TeamWarfare! First team to get " + _maxScore + " kills wins the round!");
             }
 
@@ -76,11 +85,17 @@ namespace EventfulLaboratory.slevents
 
             Exiled.Events.Handlers.Player.Died += CountAndRespawnKills;
             Exiled.Events.Handlers.Player.Joined += OnPlayerJoin;
+            Exiled.Events.Handlers.Player.Left += OnPlayerLeft;
         }
 
         private void OnPlayerJoin(JoinedEventArgs ev)
         {
             SpawnPlayer(ev.Player);
+        }
+
+        private void OnPlayerLeft(LeftEventArgs ev)
+        {
+            _teamHandler.SetDirty();
         }
 
         private void OnRoundRestart()
@@ -92,6 +107,7 @@ namespace EventfulLaboratory.slevents
         {
             Exiled.Events.Handlers.Player.Died -= CountAndRespawnKills;
             Exiled.Events.Handlers.Player.Joined -= OnPlayerJoin;
+            Exiled.Events.Handlers.Player.Left -= OnPlayerLeft;
         }
 
         private string FormatScore()
@@ -117,8 +133,7 @@ namespace EventfulLaboratory.slevents
 
             foreach (var player in Player.List)
                 if (player.Role == RoleType.Spectator)
-                    Timing.RunCoroutine(SpawnHubAsParameter(player,
-                        player.Id % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency));
+                    Timing.RunCoroutine(SpawnPlayer(player));
 
             if (_chaosKills >= _maxScore || _ntfKills >= _maxScore)
             {
@@ -144,16 +159,16 @@ namespace EventfulLaboratory.slevents
             else
             {
                 Common.Broadcast(60, FormatScore(), true);
-                Timing.RunCoroutine(SpawnHubAsParameter(ev.Target, ev.Target.Role));
+                Timing.RunCoroutine(SpawnPlayer(ev.Target));
             }
         }
 
-        private IEnumerator<float> SpawnHubAsParameter(Player player, RoleType role)
+        private IEnumerator<float> SpawnPlayer(Player player)
         {
-            yield return Timing.WaitForSeconds(0.3f);
-            player.SetRole(role);
-            yield return Timing.WaitForSeconds(0.3f);
-            player.ClearInventory();
+            yield return Timing.WaitForSeconds(0.1F);
+            
+            Timing.WaitUntilDone(_teamHandler.SpawnPlayer(player));
+            
             yield return Timing.WaitForSeconds(0.1f);
             foreach (var item in _spawnItems) player.AddItem(item);
             player.Ammo[(int) AmmoType.Nato9] = 3000;
@@ -179,43 +194,53 @@ namespace EventfulLaboratory.slevents
         {
             if (!_kda.ContainsKey(userid))
             {
-                _kda.Add(userid, kill ? new Tuple<int, int>(1, 0) : new Tuple<int, int>(0, 1));
+                _kda.Add(userid, kill ? new KdaHolder(1, 0) : new KdaHolder(0,1 ));
             }
             else
             {
-                //TODO: Test & rework
-                var (kills, deaths) = _kda[userid].ToValueTuple();
                 if (kill)
-                    kills++;
+                    _kda[userid].AddKill();
                 else
-                    deaths++;
-                _kda[userid] = new Tuple<int, int>(kills, deaths);
+                    _kda[userid].AddDeath();
             }
         }
 
         private void UpdateKdaOfUser(Player player)
         {
-            string kdaString;
-            if (_kda.ContainsKey(player.Id))
+            if (EventfulLab.Instance.Config.EnableTagModifications)
             {
-                var kda = _kda[player.Id];
-                kdaString = $"/{kda.Item1}|{kda.Item2}/";
-            }
-            else
-            {
-                kdaString = "/0|0/";
-            }
+                string kdaString;
+                if (_kda.ContainsKey(player.Id))
+                {
+                    kdaString = _kda[player.Id].ToString();
+                }
+                else
+                {
+                    kdaString = "/0|0/";
+                }
 
-            var text = player.RankName ?? "";
-            if (text.Contains("/")) text = text.Split('/')[2];
-            player.RankName = $"{kdaString} {text}";
+                var text = player.RankName ?? "";
+                if (text.Contains("/")) text = text.Split('/')[2];
+                player.RankName = $"{kdaString} {text.TrimStart()}";
+                player.UpdateRankColorToRole();
+            }
         }
+    }
+    
+    internal class KdaHolder
+    {
+        public int Kill { get; private set; }
+        public int Death { get; private set; }
 
-        private void SpawnPlayer(Player player)
+        public KdaHolder(int kill, int death)
         {
-            Timing.RunCoroutine(SpawnHubAsParameter(player,
-                player.Id % 2 == 1 ? RoleType.NtfLieutenant : RoleType.ChaosInsurgency));
-            player.Broadcast(5, "First team to get " + _maxScore + " kills win the round!");
+            Kill = kill;
+            Death = death;
         }
+
+        public int AddKill(int amount = 1) => Kill += amount;
+        public int AddDeath(int amount = 1) => Death += amount;
+
+        public override string ToString() => $"/{Kill}/{Death}";
     }
 }

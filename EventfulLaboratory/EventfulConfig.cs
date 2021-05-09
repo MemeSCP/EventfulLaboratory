@@ -11,5 +11,7 @@ namespace EventfulLaboratory
         public bool RandomEvents { get; set; } = false;
 
         public int PermanentEvents { get; set; } = 0;
+
+        public bool EnableTagModifications { get; set; } = true;
     }
 }

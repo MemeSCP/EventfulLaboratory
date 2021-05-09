@@ -84,6 +84,8 @@ namespace EventfulLaboratory
         public static void ForceEndRound(RoleType winner)
         {
             Team team = Exiled.API.Extensions.Role.GetTeam(winner);
+            LockRound(false);
+            
             RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;
             RoundSummary.escaped_scientists = team == Team.MTF ? 1 : 0;
             RoundSummary.kills_by_scp = team == Team.SCP ? 1 : 0;
