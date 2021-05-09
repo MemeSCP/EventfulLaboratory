@@ -7,5 +7,6 @@ namespace EventfulLaboratory
         TeamWarfare=2,
         PeanutVirus=3,
         FreezeTag=4,
+        Trivia=5,
     }
 }

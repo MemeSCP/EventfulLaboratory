@@ -398,6 +398,7 @@
     <Compile Include="EventfulConfig.cs" />
     <Compile Include="Extension\PlayerExtension.cs" />
     <Compile Include="Handler\EvenTeamSplitHandler.cs" />
+    <Compile Include="Handler\PreEventConfigureHandler.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="LabEvents.cs" />
     <Compile Include="SLEvents\BlankEvent.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="SLEvents\PeanutVirus.cs" />
     <Compile Include="SLEvents\SuffocationRoom.cs" />
     <Compile Include="SLEvents\TeamWarfare.cs" />
+    <Compile Include="SLEvents\TriviaEvent.cs" />
     <Compile Include="Structs\AEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

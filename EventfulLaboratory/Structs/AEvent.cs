@@ -26,6 +26,8 @@ namespace EventfulLaboratory.structs
                     return new PeanutVirus();
                 case LabEvents.FreezeTag:
                     return new FreezeTag();
+                case LabEvents.Trivia:
+                    return new TriviaEvent();
                 default:
                     if (EventfulLab.Instance.Config.DebugMode)
                         return new DebugEvent();
