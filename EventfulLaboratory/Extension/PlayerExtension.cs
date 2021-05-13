@@ -2,6 +2,7 @@
 using System.Linq;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using UnityEngine;
 
 namespace EventfulLaboratory.Extension
 {
@@ -35,6 +36,20 @@ namespace EventfulLaboratory.Extension
         public static void UpdateRankColorToRole(this Player player, RoleType role)
         {
             player.RankColor = player.ReferenceHub.serverRoles.NamedColors.FirstOrDefault(color => !color.Restricted && color.ColorHex == role.GetColor().ToHex())?.Name ?? player.RankColor;
+        }
+
+        public static RaycastHit Raytrace(this Player player, Vector3? pOffset = null)
+        {
+            var rotation = player.Rotation;
+            var offset = pOffset ?? Vector3.one.ScaleStatic(rotation);
+            var position = player.GameObject.transform.position;
+            Logger.Info($"Offset:{offset}\nPosition: {player.Position}\nRayStart: {position + offset}\nRotation: {player.Rotation}");
+            Physics.Raycast(
+                position + offset,
+                player.Rotation,
+                out var hit
+            );
+            return hit;
         }
     }
 }

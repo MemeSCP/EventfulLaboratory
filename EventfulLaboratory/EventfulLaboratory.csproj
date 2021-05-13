@@ -392,11 +392,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BuilderCmd.cs" />
     <Compile Include="Commands\SetEvent.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="EventfulConfig.cs" />
     <Compile Include="Extension\PlayerExtension.cs" />
+    <Compile Include="Extension\UnityExtension.cs" />
     <Compile Include="Handler\EvenTeamSplitHandler.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="LabEvents.cs" />

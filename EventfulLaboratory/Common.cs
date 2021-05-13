@@ -2,13 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dissonance;
+using EventfulLaboratory.Extension;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
+using Mirror;
 using Respawning;
+using UnityEngine;
 using YamlDotNet.Core;
+using Object = System.Object;
+using Random = System.Random;
 
 namespace EventfulLaboratory
 {
@@ -102,6 +108,42 @@ namespace EventfulLaboratory
             {
                 teslaGate.enabled = state;
             }
+        }
+
+        public static GameObject JustFuckingSpawnADoor(
+            Vector3 pos,
+            Vector3? pRot = null,
+            Vector3? pScale = null,
+            bool isOpenable = false,
+            bool isAlmostIndestructable = true
+            )
+        {
+            Vector3 rotation = pRot ?? new Vector3(0, 0, 0);
+            Vector3 scale = pScale ?? new Vector3(1f, 1f, 1f);
+            
+            var prefab = NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "HCZ BreakableDoor");
+            //https://www.youtube.com/watch?v=ZLiN2Js1UtQ
+            var door = UnityEngine.Object.Instantiate(prefab);
+
+            door.transform.localPosition = pos;
+            door.transform.localRotation = Quaternion.Euler(rotation);
+            door.transform.localScale = scale;
+            
+            var doorVariant = door.GetComponent<BreakableDoor>();
+
+            if (!isOpenable) doorVariant.ServerChangeLock(DoorLockReason.AdminCommand, true);
+            if (isAlmostIndestructable) doorVariant.ServerDamage(float.MinValue + 80f, DoorDamageType.ServerCommand);
+            
+            foreach (var player in Player.List)
+            {
+                var pc = player.GameObject.GetComponent<NetworkIdentity>()
+                    .connectionToClient;
+                typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage",
+                    new object[] {door.GetComponent<NetworkIdentity>(), pc});
+            }
+
+            NetworkServer.Spawn(door);
+            return door;
         }
     }
 }
