@@ -21,11 +21,11 @@ namespace EventfulLaboratory
     public class Common
     {
         private static Random rng = new Random();
-        
+
         //TODO: Make it per-round getsetter
         [CanBeNull]
         public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
-        
+
         public static Room GetRoomByName(string roomName) =>
             Map.Rooms.First(room => room.Name == roomName);
 
@@ -34,11 +34,20 @@ namespace EventfulLaboratory
             foreach (Player hub in Player.List)
             {
                 if (force) hub.ClearBroadcasts();
-                hub.ShowHint(text, timing);
-                //hub.Broadcast(timing, text);
+                //hub.ShowHint(text, timing);
+                hub.Broadcast(timing, text);
             }
         }
-        
+
+        public static void Hint(ushort timing, string text, bool force = false)
+        {
+            foreach (Player hub in Player.List)
+            {
+                if (force) hub.ClearBroadcasts();
+                hub.ShowHint(text, timing);
+            }
+        }
+
         public static void LockAllDoors()
         {
             foreach (DoorVariant door in Map.Doors)
@@ -70,7 +79,7 @@ namespace EventfulLaboratory
         {
             Round.IsLocked = isLocked;
         }
-        
+
         public static void PreventRespawnEvent(RespawningTeamEventArgs ev)
         {
             ev.NextKnownTeam = SpawnableTeamType.None;
@@ -78,20 +87,20 @@ namespace EventfulLaboratory
 
         public static Room GetRandomHeavyRoom()
         {
-            List<Room> hczRooms = Map.Rooms.Where(room => 
-                room.Name.Contains("HCZ") && 
-                !room.Name.Contains("Tesla") && 
+            List<Room> hczRooms = Map.Rooms.Where(room =>
+                room.Name.Contains("HCZ") &&
+                !room.Name.Contains("Tesla") &&
                 !room.Name.Contains("EZ_Checkpoint") &&
                 !room.Name.Contains("049")
-                ).ToList();
-            return hczRooms[rng.Next(hczRooms.Count -1)];
+            ).ToList();
+            return hczRooms[rng.Next(hczRooms.Count - 1)];
         }
 
         public static void ForceEndRound(RoleType winner)
         {
             Team team = Exiled.API.Extensions.Role.GetTeam(winner);
             LockRound(false);
-            
+
             RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;
             RoundSummary.escaped_scientists = team == Team.MTF ? 1 : 0;
             RoundSummary.kills_by_scp = team == Team.SCP ? 1 : 0;
@@ -99,6 +108,7 @@ namespace EventfulLaboratory
             {
                 player.SetRole(winner);
             }
+
             RoundSummary.singleton.ForceEnd();
         }
 
@@ -116,11 +126,11 @@ namespace EventfulLaboratory
             Vector3? pScale = null,
             bool isOpenable = false,
             bool isAlmostIndestructable = true
-            )
+        )
         {
             Vector3 rotation = pRot ?? new Vector3(0, 0, 0);
             Vector3 scale = pScale ?? new Vector3(1f, 1f, 1f);
-            
+
             var prefab = NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "HCZ BreakableDoor");
             //https://www.youtube.com/watch?v=ZLiN2Js1UtQ
             var door = UnityEngine.Object.Instantiate(prefab);
@@ -128,22 +138,17 @@ namespace EventfulLaboratory
             door.transform.localPosition = pos;
             door.transform.localRotation = Quaternion.Euler(rotation);
             door.transform.localScale = scale;
-            
+
             var doorVariant = door.GetComponent<BreakableDoor>();
 
             if (!isOpenable) doorVariant.ServerChangeLock(DoorLockReason.AdminCommand, true);
             if (isAlmostIndestructable) doorVariant.ServerDamage(float.MinValue + 80f, DoorDamageType.ServerCommand);
-            
-            foreach (var player in Player.List)
-            {
-                var pc = player.GameObject.GetComponent<NetworkIdentity>()
-                    .connectionToClient;
-                typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage",
-                    new object[] {door.GetComponent<NetworkIdentity>(), pc});
-            }
+
+            //door.UpdatePlayers();
 
             NetworkServer.Spawn(door);
             return door;
         }
     }
+
 }

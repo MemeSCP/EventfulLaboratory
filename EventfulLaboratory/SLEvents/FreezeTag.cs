@@ -229,14 +229,14 @@ namespace EventfulLaboratory.slevents
 
         private void AnnounceThawing(Player thawer, Player target, string color1, string color2)
         {
-            Common.Broadcast(5,
+            Common.Hint(5,
                 $"<color={color1}>{thawer.Nickname}</color> has been thawed by <color={color2}>{target.Nickname}</color>!",
                 true);
         }
 
         private void AnnounceUnthawing(Player thawer, Player target, string color1, string color2)
         {
-            Common.Broadcast(5,
+            Common.Hint(5,
                 $"<color={color1}>{target.Nickname}</color> has been <size=30>unthawed</size> by <color={color2}>{thawer.Nickname}</color>!",
                 true);
         }

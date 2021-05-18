@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -24,7 +26,7 @@ namespace EventfulLaboratory.Extension
             {
                 x = vec.x,
                 y = vec.y,
-                z = vec.y
+                z = vec.z
             };
         }
 
@@ -94,6 +96,37 @@ namespace EventfulLaboratory.Extension
             }
 
             return false;
+        }
+
+        public static string BuilderSerialize(this GameObject go)
+        {
+            return $"{go.name}|{go.transform.position}|{go.transform.rotation}|{go.transform.localScale}";
+        }
+
+        public static Vector3 ParseVec3(this string str)
+        {
+            var floats = str.Substring(1, str.Length-2).Split(',').Select(float.Parse).ToList();
+            return new Vector3(floats[0], floats[1], floats[2]);
+        }
+
+
+        public static Quaternion ParseQuat(this string str)
+        {
+            var floats = str.Substring(1, str.Length-2).Split(',').Select(float.Parse).ToList();
+            return new Quaternion(floats[0], floats[1], floats[2], floats[3]);
+        }
+
+        public static Vector3 CenterPoint(this List<GameObject> list)
+        {
+            float x = 0, y = 0, z = 0;
+            foreach (var position in list.Select(gameObject => gameObject.transform.position))
+            {
+                x += position.x;
+                y += position.y;
+                z += position.z;
+            }
+
+            return new Vector3(x / list.Count, y / list.Count, z / list.Count);
         }
     }
 }

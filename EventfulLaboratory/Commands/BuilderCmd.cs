@@ -10,8 +10,13 @@ using Exiled.Events.EventArgs;
 using Exiled.Permissions.Extensions;
 using MEC;
 using Mirror;
+using Org.BouncyCastle.Utilities.Encoders;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
+
+//KDE2LjIsIDEwMDcuNSwgLTU5LjIpJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTYuMiwgMTAwNy41LCAtNTkuMil8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgxLjAsIDEuMCwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE2LjIsIDEwMDcuOSwgLTU4LjApfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMC43LCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTkuNSwgMTAwNy45LCAtNjAuNSl8KDAuNSwgLTAuNSwgLTAuNSwgMC41KXwoMC40LCAwLjcsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS42LCAxMDA3LjksIC01OC4yKXwoMC4wLCAwLjAsIDAuNywgMC43KXwoMC40LCAxLjAsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxNi4xLCAxMDA3LjksIC02MC4yKXwoMC4wLCAwLjAsIDAuNywgLTAuNyl8KDAuNCwgMS4wLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMywgMTAwOC41LCAtNjAuNyl8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjMsIDEwMDguNSwgLTU3LjcpfCgwLjUsIC0wLjUsIC0wLjUsIC0wLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjMsIDEwMDguNSwgLTU5LjIpfCgwLjUsIDAuNSwgLTAuNSwgMC41KXwoMS4wLCAwLjMsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS4zLCAxMDA4LjUsIC01OS4yKXwoMC41LCAwLjUsIC0wLjUsIDAuNSl8KDEuMCwgMC4zLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMSwgMTAwOS4xLCAtNjEuMil8KDAuMCwgMC4wLCAwLjcsIC0wLjcpfCgwLjQsIDEuNiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjYsIDEwMDkuMSwgLTU3LjIpfCgwLjcsIC0wLjcsIDAuMCwgMC4wKXwoMC40LCAxLjYsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgyMC4yLCAxMDA5LjEsIC02MS40KXwoMC41LCAtMC41LCAtMC41LCAwLjUpfCgwLjQsIDEuMiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjIsIDEwMDkuMSwgLTU3LjEpfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMS4yLCAxLjAp
 
 namespace EventfulLaboratory.Commands
 {
@@ -83,7 +88,7 @@ namespace EventfulLaboratory.Commands
             }
             catch (Exception e)
             {
-                response = $"Builder cmd failed: {e.Message}";
+                response = $"Builder cmd failed: {e.Message}\n{e}";
                 return false;
             }
 
@@ -197,6 +202,42 @@ namespace EventfulLaboratory.Commands
                             Hint($"No selected object.");
                         }
                     }break;
+                    case ItemType.GunLogicer: {
+                        if (TargetObject != null)
+                        {
+                            _builtPlatformKeeper.Remove(TargetObject);
+                            Object.Destroy(TargetObject);
+                            Hint("Target object deleted.");
+                        }
+                        else
+                        {
+                            Hint($"No selected object.");
+                        }
+                    }break;
+                    case ItemType.GunMP7: {
+                        var ray = ev.Shooter.Raytrace();
+                        if (!ray.IsHit())
+                        {
+                            Hint($"Miss.\nAt: {ray.transform.position}\nPos: {ev.Shooter.Position}");
+                        }
+                        else
+                        {
+                            var thingie = ray.collider.gameObject.FindNetworkIdentityParentObj();
+                            if (thingie != null)
+                            {
+                                Hint($"Collision Detected: {thingie.name}");
+                                foreach (var componentsInChild in thingie.GetComponentsInChildren<Material>())
+                                {
+                                    componentsInChild.color = Color.red;
+                                }
+                            }
+                            else
+                            {
+                                Hint("Miss or not Movable.");
+                            }
+                            
+                        }
+                    }break;
                 }
             }
             catch (Exception e)
@@ -258,7 +299,7 @@ namespace EventfulLaboratory.Commands
             ItemType.GunLogicer,
             ItemType.GunMP7,
             ItemType.GunE11SR,
-            ItemType.KeycardO5
+            //ItemType.KeycardO5
         };
 
         public static IEnumerator<float> SetupBuilder(Player player)
@@ -281,144 +322,179 @@ namespace EventfulLaboratory.Commands
             }
         }
         #endregion
+
+        private Vector3 ArgsToVector3(List<string> subArgs)
+        {
+            switch (subArgs.Count)
+            {
+                case 1: return Vector3.one * float.Parse(subArgs[0]);
+                case 2: return new Vector3(float.Parse(subArgs[0]), float.Parse(subArgs[1]));
+                case 3: return new Vector3(float.Parse(subArgs[0]),float.Parse(subArgs[1]),float.Parse(subArgs[2]));
+            }
+
+            return Vector3.zero;
+        }
         
         #region PosRotScl Handlers
 
-        public void HandlePos(string[] args)
+        private void PerformPosChange(Vector3 pos, bool toAdd = true, GameObject gameObject = null, bool showLog = true)
         {
-            var subArgs = args.Skip(2).ToList();
-            Logger.Info(subArgs.ToString());
-            Logger.Info(subArgs[0]);
-            try
-            {
-                switch (subArgs.Count)
-                {
-                    case 0: {
-                        RA($"Pos: {TargetObject.transform.position}");
-                    }break;
-                    case 1:
-                    {
-                        var scale = float.Parse(subArgs[0]);
-                        var prev = TargetObject.transform.position.ToString();
-                        var toAdd = BuilderPlayer.Rotation * scale;
-                        TargetObject.transform.position += toAdd;
-                        RA($"Moved object {TargetObject.name}\nOldPos: {prev}\nNewPos: {TargetObject.transform.position}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                    case 2:
-                    {
-                        var (x1,y1) = (float.Parse(subArgs[0]), float.Parse(subArgs[1]));
-                        var prev = TargetObject.transform.position.ToString();
-                        var toAdd = new Vector3(x1, y1);
-                        TargetObject.transform.position += toAdd;
-                        RA($"Moved object {TargetObject.name}\nOldPos: {prev}\nNewPos: {TargetObject.transform.position}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                    case 3:
-                    {
-                        var (x1,y1,z1) = (float.Parse(subArgs[0]), float.Parse(subArgs[1]), float.Parse(subArgs[2]));
-                        var prev = TargetObject.transform.position.ToString();
-                        var toAdd = new Vector3(x1,y1,z1);
-                        TargetObject.transform.position += toAdd;
-                        RA($"Moved object {TargetObject.name}\nOldPos: {prev}\nNewPos: {TargetObject.transform.position}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                }
-            }
-            catch (Exception e)
-            {
-                RA($"Failed:{e.Message}\n{e.StackTrace}");
-            }
-        }
-
-        public void HandleRot(string[] args)
-        {
-            var subArgs = args.Skip(2).ToList();
-            try
-            {
-                switch (subArgs.Count)
-                {
-                    case 0:
-                    {
-                        RA($"Rot: {TargetObject.transform.rotation.eulerAngles}");
-                    }
-                        break;
-                    case 1:
-                    {
-                        var scale = float.Parse(subArgs[0]);
-                        var prev = TargetObject.transform.rotation.eulerAngles;
-                        var toAdd = BuilderPlayer.Rotation * scale;
-                        TargetObject.transform.rotation = Quaternion.Euler(prev + toAdd);
-                        RA($"Rotated object {TargetObject.name}\nOldRot: {prev}\nNewRot: {TargetObject.transform.rotation.eulerAngles}");
-                        TargetObject.NotifyPlayers();
-                    }
-                        break;
-                    case 2:
-                        RA("Noop.");
-                        break;
-                    case 3:
-                    {
-                        var (x1, y1, z1) = (float.Parse(subArgs[0]), float.Parse(subArgs[1]), float.Parse(subArgs[2]));
-                        var prev = TargetObject.transform.rotation.eulerAngles;
-                        var toAdd = new Vector3(x1, y1, z1);
-                        TargetObject.transform.rotation = Quaternion.Euler(prev + toAdd);
-                        RA($"Rotated object {TargetObject.name}\nOldRot: {prev}\nNewRot: {TargetObject.transform.rotation.eulerAngles}");
-                        TargetObject.NotifyPlayers();
-                    }
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                RA($"Failed:{e.Message}\n{e.StackTrace}");
-            }
-        }
-
-        public void HandleScl(string[] args)
-        {
-            var subArgs = args.Skip(2).ToList();
-            try
-            {
-                switch (subArgs.Count)
-                {
-                    case 0: {
-                        RA($"Scale: {TargetObject.transform.localScale}");
-                    }break;
-                    case 1:
-                    {
-                        var scale = float.Parse(subArgs[0]);
-                        var prev = TargetObject.transform.localScale.ToString();
-                        var toAdd = Vector3.one * scale;
-                        TargetObject.transform.localScale += toAdd;
-                        RA($"Scaled object {TargetObject.name}\nOldScl: {prev}\nNewScl: {TargetObject.transform.localScale}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                    case 2:
-                    {
-                        var (x1,y1) = (float.Parse(subArgs[0]), float.Parse(subArgs[1]));
-                        var prev = TargetObject.transform.localScale.ToString();
-                        var toAdd = new Vector3(x1, y1);
-                        TargetObject.transform.localScale += toAdd;
-                        RA($"Scaled object {TargetObject.name}\nOldScl: {prev}\nNewScl: {TargetObject.transform.localScale}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                    case 3:
-                    {
-                        var (x1,y1,z1) = (float.Parse(subArgs[0]), float.Parse(subArgs[1]), float.Parse(subArgs[2]));
-                        var prev = TargetObject.transform.localScale.ToString();
-                        var toAdd = new Vector3(x1,y1,z1);
-                        TargetObject.transform.localScale += toAdd;
-                        RA($"Scaled object {TargetObject.name}\nOldScl: {prev}\nNewScl: {TargetObject.transform.localScale}");
-                        TargetObject.NotifyPlayers();
-                    }break;
-                }
-            }
-            catch (Exception e)
-            {
-                RA($"Failed:{e.Message}\n{e.StackTrace}");
-            }
-        }
+            if (gameObject == null) gameObject = TargetObject;
             
+            var prev = gameObject.transform.position.ToString();
+            
+            if (toAdd)
+                gameObject.transform.position += pos;
+            else
+                gameObject.transform.position = pos;
+            if (showLog) RA($"Moved object {gameObject.name}\nOldPos: {prev}\nNewPos: {gameObject.transform.position}");
+            gameObject.NotifyPlayers();
+        }
+        
+        private void PerformRotChange(Vector3 rot, bool toAdd = true, GameObject gameObject = null, bool showLog = true)
+        {
+            if (gameObject == null) gameObject = TargetObject;
+            
+            var prev = gameObject.transform.rotation.ToString();
+            
+            if (toAdd)
+                gameObject.transform.rotation = Quaternion.Euler(rot + gameObject.transform.rotation.eulerAngles);
+            else
+                gameObject.transform.rotation = Quaternion.Euler(rot);
+            if (showLog) RA($"Rotated object {gameObject.name}\nOldRot: {prev}\nNewRot: {gameObject.transform.rotation.eulerAngles}");
+            gameObject.NotifyPlayers();
+        }
+        
+        private void PerformSclChange(Vector3 scl, bool toAdd = true, GameObject gameObject = null, bool showLog = true)
+        {
+            if (gameObject == null) gameObject = TargetObject;
+            
+            var prev = gameObject.transform.localScale.ToString();
+            
+            if (toAdd)
+                gameObject.transform.localScale += scl;
+            else
+                gameObject.transform.localScale = scl;
+            
+            if (showLog) RA($"Scaled object {gameObject.name}\nOldScl: {prev}\nNewScl: {gameObject.transform.localScale}");
+            gameObject.NotifyPlayers();
+        }
+
+        private void HandlePos(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Pos: {TargetObject.transform.position}");
+                return;
+            }
+            try
+            {
+                PerformPosChange(ArgsToVector3(subArgs));
+            }
+            catch (Exception e)
+            {
+                RA($"Failed:{e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        private void HandleRot(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Rot: {TargetObject.transform.rotation.eulerAngles}");
+                return;
+            }
+
+            if (subArgs.Count == 2) return; //Noop
+            
+            try
+            {
+                PerformRotChange(ArgsToVector3(subArgs), false);
+            }
+            catch (Exception e)
+            {
+                RA($"Failed:{e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        private void HandleScl(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Scale: {TargetObject.transform.localScale}");
+                return;
+            }
+            
+            try
+            {
+                PerformSclChange(ArgsToVector3(subArgs), false);
+            }
+            catch (Exception e)
+            {
+                RA($"Failed:{e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        private void HandleGPos(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Noop.");
+                return;
+            }
+            
+            Vector3 toRotate = ArgsToVector3(subArgs);
+            foreach (var gameObject in _builtPlatformKeeper)
+            {
+                PerformPosChange(toRotate, true, gameObject, false);
+            }
+            RA($"Mass Moved Pos. Added: {toRotate}");
+        }
+        
+        private void HandleGRot(string[] args)
+        {
+            RA("WIP.");/*
+            
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0 || subArgs.Count > 2)
+            {
+                RA($"Noop.");
+                return;
+            }
+
+            float angle = float.Parse(args[0]);
+            foreach (var gameObject in _builtPlatformKeeper)
+            {
+                
+            }
+            RA($"Mass Moved Pos. Added: {addPos}");*/
+            
+        }
+
+        private void HandleGScl(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Noop.");
+                return;
+            }
+            
+            Vector3 toScale = ArgsToVector3(subArgs);
+            Vector3 cntPoint = CenterPoint();
+            foreach (var gameObject in _builtPlatformKeeper)
+            {
+                PerformPosChange((gameObject.transform.position - cntPoint).ScaleStatic(toScale), true, gameObject, false);
+                PerformSclChange(gameObject.transform.localScale.ScaleStatic(toScale), true, gameObject, false);
+            }
+
+            RA($"Mass Scaled. Scale: {toScale}");
+        }
+
         #endregion
         
         #region CmdHandler
@@ -439,24 +515,97 @@ namespace EventfulLaboratory.Commands
                 case "position":
                     HandlePos(args);
                     return true;
+                case "gmv":
+                case "gmov":
+                case "gpos":
+                case "gposition":
+                    HandleGPos(args);
+                    return true;
                 case "rot":
                 case "rotation":
                     HandleRot(args);
+                    return true;
+                case "grot":
+                case "grotation":
+                    HandleGRot(args);
                     return true;
                 case "scl":
                 case "scale":
                     HandleScl(args);
                     return true;
-                case "mult": {
-                    var pre = _mult;
-                    _mult = float.Parse(args[2]);
-                    Hint($"Mult\nPre: {pre}\nNew: {_mult}");
+                case "gscl":
+                case "gscale":
+                    HandleGScl(args);
                     return true;
-                }
+                case "door":
+                    var newDoor = Common.JustFuckingSpawnADoor(_center);
+                    _builtPlatformKeeper.Add(newDoor);
+                    TargetObject = newDoor;
+                    RA($"Added door to {_center}");
+                    return true;
+                case "serialize":
+                    Logger.Info((_center + "%" + _builtPlatformKeeper.Aggregate("", (s, o) => o == null ? s : s + "%" + o.BuilderSerialize()).Substring(1)).ToBase64());
+                    RA("Serialized. Check Console");
+                    return true;
+                case "load":
+                    var str = args[2].FromBase64();
+                    var parts = str.Split('%');
+                    _center = parts[0].ParseVec3();
+                    for (int i = 1; i < parts.Length; i++)
+                    {
+                        RA($"4/{i}");
+                        var part = parts[i].Split('|');
+                        var obj = HandleSpawning(
+                            part[0],
+                            part[1].ParseVec3(),
+                            part[2].ParseQuat(),
+                            part[3].ParseVec3()
+                        );
+                        _builtPlatformKeeper.Add(obj);
+                    }
+                    return true;
+                case "clear":
+                    foreach (var o in _builtPlatformKeeper)
+                    {
+                        Object.Destroy(o);
+                    }
+                    _builtPlatformKeeper.Clear();
+                    RA("Cleared platform list");
+                    return true;
+                case "copy":
+                    var newObj = HandleSpawning(
+                        TargetObject.name,
+                        TargetObject.transform.position,
+                        TargetObject.transform.rotation,
+                        TargetObject.transform.localScale
+                    );
+                    _builtPlatformKeeper.Add(newObj);
+                    TargetObject = newObj;
+                    RA("Copied object");
+                    return true;
             }
 
             return false;
         }
+
+        private GameObject HandleSpawning(string name, Vector3 pos, Quaternion rot, Vector3 scl)
+        {
+            switch (name)
+            {
+                case "HCZ BreakableDoor(Clone)":
+                case "HCZ BreakableDoor":
+                    return Common.JustFuckingSpawnADoor(
+                        pos,
+                        rot.eulerAngles,
+                        scl
+                    );
+                    
+            }
+
+            return null;
+        }
         #endregion
+
+        private Vector3 CenterPoint() => _builtPlatformKeeper.CenterPoint();
     }
 }

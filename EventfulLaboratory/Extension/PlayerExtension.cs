@@ -42,7 +42,7 @@ namespace EventfulLaboratory.Extension
         {
             var rotation = player.Rotation;
             var offset = pOffset ?? Vector3.one.ScaleStatic(rotation);
-            var position = player.GameObject.transform.position;
+            var position = player.CameraTransform.position;
             Logger.Info($"Offset:{offset}\nPosition: {player.Position}\nRayStart: {position + offset}\nRotation: {player.Rotation}");
             Physics.Raycast(
                 position + offset,

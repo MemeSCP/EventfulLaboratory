@@ -36,7 +36,7 @@ namespace EventfulLaboratory.slevents
             Room dStart = Common.GetRoomByName(Constant.SEVEN_NINE_CHAMBER);
             foreach (Player player in players)
             {
-                if (player == _mainPeanut)
+                if (player.UserId == _mainPeanut.UserId)
                 {
                     player.SetRole(RoleType.Scp173);
                     yield return Timing.WaitForSeconds(0.3f);
@@ -82,7 +82,8 @@ namespace EventfulLaboratory.slevents
 
         private IEnumerator<float> OnPeanutKill(DiedEventArgs ev)
         {
-            if (ev.Killer == _mainPeanut)
+            yield return Timing.WaitForSeconds(1f);
+            if (ev.Killer.UserId == _mainPeanut.UserId)
             {
                 ev.Target.SetRole(RoleType.Scp173);
                 yield return Timing.WaitForSeconds(1f);
