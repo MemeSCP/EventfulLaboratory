@@ -28,6 +28,8 @@ namespace EventfulLaboratory.structs
                     return new FreezeTag();
                 case LabEvents.AmazingRace:
                     return new AmazingRace();
+                case LabEvents.TPDoors:
+                    return new TeleportingDoors();
                 default:
                     if (EventfulLab.Instance.Config.DebugMode)
                         return new DebugEvent();

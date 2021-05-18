@@ -96,6 +96,8 @@ namespace EventfulLaboratory
             return hczRooms[rng.Next(hczRooms.Count - 1)];
         }
 
+        public static DoorVariant GetRandomDoor() => Map.Doors[rng.Next(Map.Doors.Count - 1)];
+
         public static void ForceEndRound(RoleType winner)
         {
             Team team = Exiled.API.Extensions.Role.GetTeam(winner);

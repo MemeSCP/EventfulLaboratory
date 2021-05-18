@@ -149,6 +149,7 @@
     <Reference Include="Novell.Directory.Ldap, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <HintPath>$(SL_MANAGED_DLLS)\Novell.Directory.Ldap.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Collections, Version=4.0.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>$(SL_MANAGED_DLLS)\System.Collections.dll</HintPath>
     </Reference>
@@ -412,6 +413,7 @@
     <Compile Include="SLEvents\HideNSeek.cs" />
     <Compile Include="SLEvents\PeanutChamber.cs" />
     <Compile Include="SLEvents\PeanutVirus.cs" />
+    <Compile Include="SLEvents\TeleportingDoors.cs" />
     <Compile Include="SLEvents\SuffocationRoom.cs" />
     <Compile Include="SLEvents\TeamWarfare.cs" />
     <Compile Include="Structs\AEvent.cs" />

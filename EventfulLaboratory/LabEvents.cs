@@ -8,5 +8,7 @@ namespace EventfulLaboratory
         PeanutVirus=3,
         FreezeTag=4,
         AmazingRace=5,
+        
+        TPDoors=1000,
     }
 }
