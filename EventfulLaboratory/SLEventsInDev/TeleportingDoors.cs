@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using EventfulLaboratory.Extension;
+using EventfulLaboratory.structs;
+using Exiled.API.Features;
+using Interactables.Interobjects.DoorUtils;
+using UnityEngine;
+using Random = System.Random;
+
+namespace EventfulLaboratory.slevents
+{
+    public class TeleportingDoors : AEvent
+    {
+        private Dictionary<DoorVariant, DoorVariant> _doorCache;
+        private readonly Random _rng = new Random();
+
+        public override void OnRoundStart()
+        {
+            _doorCache = Map.Doors
+                .Zip(
+                    Map.Doors.OrderBy(e => _rng.Next()), //Zip Doors to Random Order
+                    (from, to) => new {from, to} //Map them to key,value pairs
+                )
+                .ToDictionary(x => x.from, y => y.to);
+            
+            Exiled.Events.Handlers.Player.SyncingData += ev =>
+            {
+                if (ev.Player.Role == RoleType.Spectator) return;
+
+                foreach (var doorVariant in _doorCache)
+                {
+                    //The door is Closed.
+                    if (doorVariant.Key == null || !doorVariant.Key.IsConsideredOpen()) continue;
+
+                    if (Math.Abs(doorVariant.Key.transform.position.y - ev.Player.Position.y) > 2) continue;
+                    if (Math.Abs(doorVariant.Key.transform.position.x - ev.Player.Position.x) > 0.5) continue;
+                    if (Math.Abs(doorVariant.Key.transform.position.z - ev.Player.Position.z) > 0.5) continue;
+                    
+                    var pos = doorVariant.Value.transform;
+
+                    ev.Player.Position = pos.position + pos.forward.ScaleStatic(new Vector3(1.2f, 1.2f, 1.2f)) + new Vector3(0, 1 ,0);
+                    
+                    return;
+                }
+            };
+
+            Exiled.Events.Handlers.Map.Decontaminating += ev => ev.IsAllowed = false;
+            foreach (var player in Player.List)
+            {
+                player.IsBypassModeEnabled = true;
+                player.Broadcast(3, "Get out of the facility. Doors are dangerous");
+            }
+        }
+    }
+}

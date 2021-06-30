@@ -3,6 +3,7 @@ using CommandSystem;
 using EventfulLaboratory.slevents;
 using EventfulLaboratory.structs;
 using Exiled.Permissions.Extensions;
+using Random = UnityEngine.Random;
 
 namespace EventfulLaboratory.Commands
 {
@@ -18,7 +19,7 @@ namespace EventfulLaboratory.Commands
                 return false;
             }
             LabEvents evnt;
-            if (arguments.Count == 0)
+            if (arguments.Count == 0 || arguments.At(1) == "help" || arguments.At(1) == "list")
             {
                 response = "Avaliable events:";
                 foreach (var ev in Enum.GetNames(typeof(LabEvents)))
@@ -27,12 +28,21 @@ namespace EventfulLaboratory.Commands
                 }
                 return true;
             }
-            if (!Enum.TryParse(arguments.At(0), out evnt))
+
+            if (arguments.At(1) == "random")
+            {
+                EventfulLab.NextEvent = AEvent.GetRandomEvent();
+            }
+            else if (Enum.TryParse(arguments.At(0), out evnt))
+            {
+                EventfulLab.NextEvent = AEvent.GetEvent(evnt);
+            }
+            else
             {
                 response = "First argument is not a number! Please provide a valid eventId. (cmd: event <number>)";
                 return false;
             }
-            EventfulLab.NextEvent = AEvent.GetEvent(evnt);
+
             if (EventfulLab.NextEvent == null || EventfulLab.NextEvent.GetType() == typeof(BlankEvent))
             {
                 response = "Event with id: " + arguments.At(0) + " was not found!";

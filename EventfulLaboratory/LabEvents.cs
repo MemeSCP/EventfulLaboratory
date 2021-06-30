@@ -7,8 +7,11 @@ namespace EventfulLaboratory
         TeamWarfare=2,
         PeanutVirus=3,
         FreezeTag=4,
-        AmazingRace=5,
         
-        TPDoors=1000,
+        AmazingRace=1000,
+        TPDoors=1001,
+        DodgeBall=1002,
+        HideNSeek=1003,
+        SuffocationRoom=1004,
     }
 }

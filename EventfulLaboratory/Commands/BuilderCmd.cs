@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
+using static EventfulLaboratory.Common;
 
 //KDE2LjIsIDEwMDcuNSwgLTU5LjIpJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTYuMiwgMTAwNy41LCAtNTkuMil8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgxLjAsIDEuMCwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE2LjIsIDEwMDcuOSwgLTU4LjApfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMC43LCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTkuNSwgMTAwNy45LCAtNjAuNSl8KDAuNSwgLTAuNSwgLTAuNSwgMC41KXwoMC40LCAwLjcsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS42LCAxMDA3LjksIC01OC4yKXwoMC4wLCAwLjAsIDAuNywgMC43KXwoMC40LCAxLjAsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxNi4xLCAxMDA3LjksIC02MC4yKXwoMC4wLCAwLjAsIDAuNywgLTAuNyl8KDAuNCwgMS4wLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMywgMTAwOC41LCAtNjAuNyl8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjMsIDEwMDguNSwgLTU3LjcpfCgwLjUsIC0wLjUsIC0wLjUsIC0wLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjMsIDEwMDguNSwgLTU5LjIpfCgwLjUsIDAuNSwgLTAuNSwgMC41KXwoMS4wLCAwLjMsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS4zLCAxMDA4LjUsIC01OS4yKXwoMC41LCAwLjUsIC0wLjUsIDAuNSl8KDEuMCwgMC4zLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMSwgMTAwOS4xLCAtNjEuMil8KDAuMCwgMC4wLCAwLjcsIC0wLjcpfCgwLjQsIDEuNiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjYsIDEwMDkuMSwgLTU3LjIpfCgwLjcsIC0wLjcsIDAuMCwgMC4wKXwoMC40LCAxLjYsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgyMC4yLCAxMDA5LjEsIC02MS40KXwoMC41LCAtMC41LCAtMC41LCAwLjUpfCgwLjQsIDEuMiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjIsIDEwMDkuMSwgLTU3LjEpfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMS4yLCAxLjAp
 
@@ -72,6 +73,14 @@ namespace EventfulLaboratory.Commands
                     case "ray":
                         var ray = player.Raytrace();
                         player.RemoteAdminMessage($"Ray:{ray}\nPos:{player.Position}\nCollider: {ray.collider}\nDistance: {ray.distance}\nTransPos: {ray.transform}\nRotation{player.Rotation}\nAt: {ray.point}");
+                        break;
+                    case "prefabs":
+                        var str = "Prefabs:";
+                        NetworkManager.singleton.spawnPrefabs.ForEach(prefab =>
+                        {
+                            str += prefab.name + ": - " + prefab.gameObject.name;
+                        });
+                        player.RemoteAdminMessage(str);
                         break;
                     default:
                         if (_builderOptions.HandleArgs(args))
@@ -172,7 +181,7 @@ namespace EventfulLaboratory.Commands
                         var ray = ev.Shooter.Raytrace();
                         if (ray.IsHit())
                         {
-                            Common.JustFuckingSpawnADoor(ray.point + new Vector3(0, 0.5f, 0f));
+                            _builtPlatformKeeper.Add(JustFuckingSpawnADoor(ray.point + new Vector3(0, 0.5f, 0f)));
                             Hint($"Door spawned at shot location\n{ray.point}\n{ev.Shooter.Position}");
                         }
                         else
@@ -397,6 +406,24 @@ namespace EventfulLaboratory.Commands
                 RA($"Failed:{e.Message}\n{e.StackTrace}");
             }
         }
+        
+        private void SetPosition(string[] args)
+        {
+            var subArgs = args.Skip(2).ToList();
+            if (subArgs.Count == 0)
+            {
+                RA($"Pos: {TargetObject.transform.position}");
+                return;
+            }
+            try
+            {
+                PerformPosChange(ArgsToVector3(subArgs), false);
+            }
+            catch (Exception e)
+            {
+                RA($"Failed:{e.Message}\n{e.StackTrace}");
+            }
+        }
 
         private void HandleRot(string[] args)
         {
@@ -511,9 +538,11 @@ namespace EventfulLaboratory.Commands
                     return true;
                 case "mv":
                 case "mov":
+                    HandlePos(args);
+                    return true;
                 case "pos":
                 case "position":
-                    HandlePos(args);
+                    SetPosition(args);
                     return true;
                 case "gmv":
                 case "gmov":
@@ -573,36 +602,47 @@ namespace EventfulLaboratory.Commands
                     RA("Cleared platform list");
                     return true;
                 case "copy":
+                {
                     var newObj = HandleSpawning(
                         TargetObject.name,
                         TargetObject.transform.position,
                         TargetObject.transform.rotation,
                         TargetObject.transform.localScale
                     );
+                    if (newObj == null)
+                    {
+                        RA("Object copy Failed. Returned null");
+                        return true;
+                    }
+
                     _builtPlatformKeeper.Add(newObj);
                     TargetObject = newObj;
                     RA("Copied object");
                     return true;
+                }
+                case "spawn":
+                {
+                    var newObj = HandleSpawning(
+                        args[2],
+                        BuilderPlayer.GameObject.transform.position,
+                        Quaternion.identity,
+                        Vector3.one
+                    );
+                    
+                    if (newObj == null)
+                    {
+                        RA("Object spawn Failed. Returned null");
+                        return true;
+                    }
+
+                    _builtPlatformKeeper.Add(newObj);
+                    TargetObject = newObj;
+                    RA("Spawned object " + newObj.name);
+                    return true;
+                }
             }
 
             return false;
-        }
-
-        private GameObject HandleSpawning(string name, Vector3 pos, Quaternion rot, Vector3 scl)
-        {
-            switch (name)
-            {
-                case "HCZ BreakableDoor(Clone)":
-                case "HCZ BreakableDoor":
-                    return Common.JustFuckingSpawnADoor(
-                        pos,
-                        rot.eulerAngles,
-                        scl
-                    );
-                    
-            }
-
-            return null;
         }
         #endregion
 

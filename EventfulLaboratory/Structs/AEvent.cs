@@ -26,13 +26,26 @@ namespace EventfulLaboratory.structs
                     return new PeanutVirus();
                 case LabEvents.FreezeTag:
                     return new FreezeTag();
-                case LabEvents.AmazingRace:
-                    return new AmazingRace();
-                case LabEvents.TPDoors:
-                    return new TeleportingDoors();
                 default:
                     if (EventfulLab.Instance.Config.DebugMode)
-                        return new DebugEvent();
+                    {
+                        //Debug only events. Not complete
+                        switch (labEvents)
+                        {
+                            case LabEvents.AmazingRace:
+                                return new AmazingRace();
+                            case LabEvents.TPDoors:
+                                return new TeleportingDoors();
+                            case LabEvents.DodgeBall:
+                                return new DodgeBall();
+                            case LabEvents.HideNSeek:
+                                return new HideNSeek();
+                            case LabEvents.SuffocationRoom:
+                                return new SuffocationRoom();
+                            default:
+                                return new DebugEvent();
+                        }
+                    }
                     else
                         return new BlankEvent();
             }
@@ -40,7 +53,7 @@ namespace EventfulLaboratory.structs
 
         public static AEvent GetRandomEvent()
         {
-            return GetEvent((LabEvents) new Random().NextInt(1, Enum.GetValues(typeof(LabEvents)).Length));
+            return GetEvent((LabEvents) Common.GetRandom().Next(1, Enum.GetValues(typeof(LabEvents)).Length));
         }
 
         public string GetName()

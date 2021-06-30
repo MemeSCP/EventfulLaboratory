@@ -404,23 +404,28 @@
     <Compile Include="Handler\EvenTeamSplitHandler.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="LabEvents.cs" />
-    <Compile Include="SLEvents\AmazingRace.cs" />
+    <Compile Include="SLEventsInDev\AmazingRace.cs" />
+    <Compile Include="SLEventsInDev\Deathrun.cs" />
+    <Compile Include="SLEventsInDev\DebugEvent.cs" />
+    <Compile Include="SLEventsInDev\DodgeBall.cs" />
+    <Compile Include="SLEventsInDev\HideNSeek.cs" />
+    <Compile Include="SLEventsInDev\SuffocationRoom.cs" />
+    <Compile Include="SLEventsInDev\TagEvent.cs" />
+    <Compile Include="SLEventsInDev\TeleportingDoors.cs" />
     <Compile Include="SLEvents\BlankEvent.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="SLEvents\DebugEvent.cs" />
-    <Compile Include="SLEvents\DodgeBall.cs" />
     <Compile Include="SLEvents\FreezeTag.cs" />
-    <Compile Include="SLEvents\HideNSeek.cs" />
     <Compile Include="SLEvents\PeanutChamber.cs" />
     <Compile Include="SLEvents\PeanutVirus.cs" />
-    <Compile Include="SLEvents\TeleportingDoors.cs" />
-    <Compile Include="SLEvents\SuffocationRoom.cs" />
     <Compile Include="SLEvents\TeamWarfare.cs" />
     <Compile Include="Structs\AEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SLEventsInDev\DeathrunRooms" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

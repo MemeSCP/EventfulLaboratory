@@ -151,6 +151,69 @@ namespace EventfulLaboratory
             NetworkServer.Spawn(door);
             return door;
         }
+
+        public static GameObject SpawnPrefab(
+            string prefabName,
+            Vector3 pos,
+            Vector3? pRot = null,
+            Vector3? pScale = null
+        )
+        {
+            return SpawnPrefab(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == prefabName),pos, pRot, pScale);
+        }
+        
+        
+
+        public static GameObject SpawnPrefab(
+            GameObject prefab,
+            Vector3 pos,
+            Vector3? pRot = null,
+            Vector3? pScale = null
+        )
+        {
+            Vector3 rotation = pRot ?? new Vector3(0, 0, 0);
+            Vector3 scale = pScale ?? new Vector3(1f, 1f, 1f);
+            
+            var gameO = UnityEngine.Object.Instantiate(prefab);
+
+            gameO.transform.localPosition = pos;
+            gameO.transform.localRotation = Quaternion.Euler(rotation);
+            gameO.transform.localScale = scale;
+
+            gameO.NotifyPlayers();
+
+            NetworkServer.Spawn(gameO);
+            return gameO;
+        }
+
+        public static Random GetRandom() => rng;
+        
+        public static GameObject HandleSpawning(string name, Vector3 pos, Quaternion rot, Vector3 scl)
+        {
+            switch (name)
+            {
+                case "HCZ BreakableDoor(Clone)":
+                case "HCZ BreakableDoor":
+                    return JustFuckingSpawnADoor(
+                        pos,
+                        rot.eulerAngles,
+                        scl
+                    );
+                default:
+                    if (!name.StartsWith("B272sa")) return SpawnPrefab(name, pos, rot.eulerAngles, scl);
+                    
+                    
+                    foreach (NetworkIdentity ni in UnityEngine.Object.FindObjectsOfType<NetworkIdentity>())
+                    {
+                        if (ni.gameObject.name == name)
+                        {
+                            return SpawnPrefab(ni.gameObject, pos, rot.eulerAngles, scl);
+                        }
+                    }
+                    return SpawnPrefab(name, pos, rot.eulerAngles, scl);
+            }
+            return null;
+        }
     }
 
 }
