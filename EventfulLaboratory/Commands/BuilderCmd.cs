@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using CommandSystem;
 using EventfulLaboratory.Extension;
-using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Exiled.Permissions.Extensions;
 using MEC;
 using Mirror;
-using Org.BouncyCastle.Utilities.Encoders;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 using static EventfulLaboratory.Common;
 
@@ -153,9 +148,9 @@ namespace EventfulLaboratory.Commands
 
             try
             {
-                switch (ev.Shooter.Inventory.curItem)
+                switch (ev.Shooter.CurrentItem.Type)
                 {
-                    case ItemType.GunUSP: {
+                    case ItemType.GunRevolver: {
                         //Case Scoping, cause fuck variable init shadow amiright
                         var ray = ev.Shooter.Raytrace();
                         if (!ray.IsHit())
@@ -177,7 +172,7 @@ namespace EventfulLaboratory.Commands
                             
                         }
                     }break;
-                    case ItemType.GunProject90: {
+                    case ItemType.GunCrossvec: {
                         var ray = ev.Shooter.Raytrace();
                         if (ray.IsHit())
                         {
@@ -223,7 +218,7 @@ namespace EventfulLaboratory.Commands
                             Hint($"No selected object.");
                         }
                     }break;
-                    case ItemType.GunMP7: {
+                    case ItemType.GunShotgun: {
                         var ray = ev.Shooter.Raytrace();
                         if (!ray.IsHit())
                         {
@@ -258,7 +253,7 @@ namespace EventfulLaboratory.Commands
 
         private static int _syncThrottle = 0;
 
-        private void MovementEvent(SyncingDataEventArgs ev)
+        /*private void MovementEvent(SyncingDataEventArgs ev)
         {
             if (!IsSetup()) return;
             if (ev.Player.UserId != BuilderPlayer.UserId) return;
@@ -297,16 +292,16 @@ namespace EventfulLaboratory.Commands
             {
                 TargetObject.NotifyPlayers();
             }
-        }
+        }*/
         
         #region BuilderPlayer Setup 
         private static readonly ItemType[] _weapons =
         {
-            ItemType.GunUSP,
-            ItemType.GunProject90,
+            ItemType.GunRevolver,
+            ItemType.GunCrossvec,
             ItemType.GunCOM15,
             ItemType.GunLogicer,
-            ItemType.GunMP7,
+            ItemType.GunShotgun,
             ItemType.GunE11SR,
             //ItemType.KeycardO5
         };
@@ -317,17 +312,14 @@ namespace EventfulLaboratory.Commands
             yield return Timing.WaitForSeconds(0.5f);
             player.NoClipEnabled = true;
             player.IsGodModeEnabled = true;
-            player.Ammo[(int) AmmoType.Nato9] = 3000;
-            player.Ammo[(int) AmmoType.Nato556] = 3000;
-            player.Ammo[(int) AmmoType.Nato762] = 3000;
+            foreach (var ammoKey in player.Ammo.Keys)
+            {
+                player.Ammo[ammoKey] = 3000;
+            }
             
             foreach (var itemType in _weapons)
             {
-                player.AddItem(new Inventory.SyncItemInfo
-                {
-                    id = itemType,
-                    durability = 200f,
-                });
+                player.AddItem(itemType);
             }
         }
         #endregion

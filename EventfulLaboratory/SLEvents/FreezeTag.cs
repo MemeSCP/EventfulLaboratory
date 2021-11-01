@@ -5,11 +5,9 @@ using EventfulLaboratory.Extension;
 using EventfulLaboratory.Handler;
 using EventfulLaboratory.structs;
 using Exiled.API.Enums;
-using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.Events;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using Interactables.Interobjects.DoorUtils;
 using MEC;
 using UnityEngine;
 
@@ -19,8 +17,8 @@ namespace EventfulLaboratory.slevents
     {
         //TODO: Players into hashMap
 
-        private readonly RoleType _ntfRole = RoleType.NtfLieutenant;
-        private readonly RoleType _chaosRole = RoleType.ChaosInsurgency;
+        private readonly RoleType _ntfRole = RoleType.NtfPrivate;
+        private readonly RoleType _chaosRole = RoleType.ChaosMarauder;
 
         private EvenTeamSplitHandler _teamHandler;
 
@@ -43,8 +41,8 @@ namespace EventfulLaboratory.slevents
             {
                 foreach (var doorVariant in room.Doors)
                 {
-                    if (!doorVariant.TargetState)
-                        doorVariant.NetworkTargetState = true;
+                    if (!doorVariant.IsLocked)
+                        doorVariant.ChangeLock(DoorLockType.AdminCommand);
                 }
             }
             Exiled.Events.Handlers.Player.Hurting += OnPlayerHurtProxy;
@@ -83,7 +81,7 @@ namespace EventfulLaboratory.slevents
         
         private IEnumerator<float> RandomPlayerSpawn(Player player)
         {
-            player.Items.Clear();
+            player.ClearInventory();
             
             yield return Timing.WaitUntilDone(SpawnHubAsParameter(player));
             yield return Timing.WaitForSeconds(1f);
@@ -101,12 +99,12 @@ namespace EventfulLaboratory.slevents
             RoleType targetRole = DetermineThawedRole(_teamHandler.GetSetRole(player));
             Vector3 loc = player.Position;
             
-            player.Items.Clear();
+            player.ClearInventory();
             
             player.SetRole(targetRole);
             yield return Timing.WaitForSeconds(1f);
             
-            player.Items.Clear();
+            player.ClearInventory();
             
             player.Position = loc;
                 
@@ -120,12 +118,10 @@ namespace EventfulLaboratory.slevents
         {
             RoleType role = _teamHandler.GetSetRole(player);
             yield return Timing.WaitForSeconds(0.3f);
-            player.SetRole(role, true);
+            player.SetRole(role);
             yield return Timing.WaitForSeconds(0.1f);
-            player.AddItem(ItemType.GunUSP);
-            player.AddItem(ItemType.Disarmer);
-            player.Inventory.SetCurItem(ItemType.GunUSP);
-            player.Inventory.items.ModifyDuration(0, 300);
+            Item newItem = player.AddItem(ItemType.GunCOM15);
+            player.Inventory.ServerSelectItem(newItem.Serial);
             player.EnableEffect<Scp207>();
             player.GetEffect(EffectType.Scp207).Intensity = 1;
             
@@ -156,7 +152,7 @@ namespace EventfulLaboratory.slevents
             ev.IsAllowed = false;
             ev.Target.SetAlmostInvincible();
             
-            if (ev.DamageType != DamageTypes.Usp) yield break;
+            if (ev.DamageType != DamageTypes.Com15) yield break;
             
             RoleType role = ev.Target.Role;
 

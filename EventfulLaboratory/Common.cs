@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dissonance;
 using EventfulLaboratory.Extension;
+using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
@@ -15,6 +16,7 @@ using UnityEngine;
 using YamlDotNet.Core;
 using Object = System.Object;
 using Random = System.Random;
+using APIDoor = Exiled.API.Features.Door;
 
 namespace EventfulLaboratory
 {
@@ -50,9 +52,10 @@ namespace EventfulLaboratory
 
         public static void LockAllDoors()
         {
-            foreach (DoorVariant door in Map.Doors)
+            foreach (APIDoor door in Map.Doors)
             {
-                door.ServerChangeLock(DoorLockReason.AdminCommand, true);
+                if (!door.IsLocked)
+                    door.ChangeLock(DoorLockType.AdminCommand);
             }
         }
 
@@ -66,11 +69,12 @@ namespace EventfulLaboratory
 
         public static void ToggleLockEntranceGate(bool lockit = true)
         {
-            foreach (DoorVariant door in Map.Doors)
+            foreach (APIDoor door in Map.Doors)
             {
-                if (door.name == Constant.ECZ_GATE)
+                if (door.Type == DoorType.CheckpointEntrance) 
                 {
-                    door.ServerChangeLock(DoorLockReason.AdminCommand, lockit);
+                    if (door.IsLocked != lockit)
+                        door.ChangeLock(DoorLockType.AdminCommand);
                 }
             }
         }
@@ -96,11 +100,11 @@ namespace EventfulLaboratory
             return hczRooms[rng.Next(hczRooms.Count - 1)];
         }
 
-        public static DoorVariant GetRandomDoor() => Map.Doors[rng.Next(Map.Doors.Count - 1)];
+        public static APIDoor GetRandomDoor() => Map.Doors[rng.Next(Map.Doors.Count - 1)];
 
         public static void ForceEndRound(RoleType winner)
         {
-            Team team = Exiled.API.Extensions.Role.GetTeam(winner);
+            Team team = winner.GetTeam();
             LockRound(false);
 
             RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;

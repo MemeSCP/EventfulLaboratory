@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using EventfulLaboratory.structs;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
+using InventorySystem.Items.Firearms.Attachments;
 using MEC;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
@@ -92,14 +94,32 @@ namespace EventfulLaboratory.slevents
         {
             yield return Timing.WaitForSeconds(0.1f);
             ply.SetRole(RoleType.FacilityGuard);
-            ply.Inventory.Clear();
-            ply.Inventory.AddNewItem(ItemType.GunUSP, 3000f, 1, 1, 1); //USP With 3k Ammo
-            ply.Inventory.AddNewItem(ItemType.Radio, 1000f);
+            ply.ClearInventory();
+            Firearm newGun = new Firearm(ItemType.GunCOM15);
+            newGun.Ammo = 255;
+            newGun.Attachments = new[]
+            {
+                new FirearmAttachment
+                {
+                    Name = AttachmentNameTranslation.AmmoCounter,
+                    Settings = new AttachmentSettings
+                    {
+                        Weight = 2000f,
+                        AdditionalCons = AttachmentDescriptiveDownsides.Laser,
+                        AdditionalPros = AttachmentDescriptiveAdvantages.AmmoCounter,
+                        PhysicalLength = 30
+                    },
+                    Slot = AttachmentSlot.Sight
+                }
+            };
+            ply.AddItem(newGun);
+            ply.AddItem(new Firearm(ItemType.Radio)
+            {
+                Ammo = 255
+            });
             ply.IsBypassModeEnabled = true;
             ply.ShowHint("Search for them. First 4 kills will make them Seekers too!");
-            
         }
-        
         #endregion
     }
 }

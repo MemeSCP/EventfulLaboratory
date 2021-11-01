@@ -19,7 +19,7 @@ namespace EventfulLaboratory.Commands
                 return false;
             }
             LabEvents evnt;
-            if (arguments.Count == 0 || arguments.At(1) == "help" || arguments.At(1) == "list")
+            if (arguments.Count == 0 || arguments.At(0) == "help" || arguments.At(0) == "list")
             {
                 response = "Avaliable events:";
                 foreach (var ev in Enum.GetNames(typeof(LabEvents)))
@@ -29,7 +29,7 @@ namespace EventfulLaboratory.Commands
                 return true;
             }
 
-            if (arguments.At(1) == "random")
+            if (arguments.At(0) == "random")
             {
                 EventfulLab.NextEvent = AEvent.GetRandomEvent();
             }

@@ -12,6 +12,9 @@ namespace EventfulLaboratory
     {
         private static readonly Lazy<EventfulLab> LazyInstance = new Lazy<EventfulLab>(() => new EventfulLab());
 
+        public override string Name => "Eventful Laboratory";
+        public override string Author => "Sqbika";
+
         public static EventfulLab Instance => LazyInstance.Value;
 
         private static AEvent _eventCandidate;
@@ -19,6 +22,7 @@ namespace EventfulLaboratory
 
         public override void OnEnabled()
         {
+            Log.Info("Starting Eventful Laboratory.");
             if (_eventCandidate == null)
             {
                 _eventCandidate = AEvent.GetEvent((LabEvents)Config.PermanentEvents);
@@ -27,6 +31,8 @@ namespace EventfulLaboratory
             Exiled.Events.Handlers.Server.WaitingForPlayers += OnNewRound;
             Exiled.Events.Handlers.Server.RoundStarted += OnRoundStart;
             Exiled.Events.Handlers.Server.RoundEnded += OnRoundEnd;
+            
+            base.OnEnabled();
         }
 
         public override void OnDisabled()
@@ -35,6 +41,8 @@ namespace EventfulLaboratory
             Exiled.Events.Handlers.Server.RoundStarted -= OnRoundStart;
             Exiled.Events.Handlers.Server.RoundEnded -= OnRoundEnd;
             _eventCandidate?.Disable();
+            
+            base.OnDisabled();
         }
 
         public override void OnReloaded()

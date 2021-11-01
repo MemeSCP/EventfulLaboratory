@@ -36,7 +36,7 @@ namespace EventfulLaboratory.Handler
             if (!_clearInventory) yield break;
             
             yield return Timing.WaitForSeconds(0.3F);
-            player.Inventory.Clear();
+            player.ClearInventory();
         }
 
         public RoleType GetSetRole(Player player)

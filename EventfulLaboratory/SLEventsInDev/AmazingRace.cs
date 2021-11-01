@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CustomPlayerEffects;
 using EventfulLaboratory.structs;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
+using InventorySystem;
 using MEC;
 using UnityEngine;
 using MapEvents = Exiled.Events.Handlers.Map;
@@ -82,7 +85,7 @@ namespace EventfulLaboratory.slevents
                     foreach (var player in Player.List)
                     {
                         player.SetRole(RoleType.ClassD);
-                        player.Inventory.AddNewItem(ItemType.KeycardJanitor);
+                        player.AddItem(ItemType.KeycardJanitor);
                         player.ShowHint(
                             "Find all the Keycards. You need to through every step.\n<color=red>You need an O5 to escape.</color>\nClock is ticking. Good luck."
                         );
@@ -134,25 +137,27 @@ namespace EventfulLaboratory.slevents
         void PlayerPickup(PickingUpItemEventArgs ev)
         {
             ev.IsAllowed = false;
-            if (ev.Pickup.itemId.IsKeycard())
+            if (ev.Pickup.Type.IsKeycard())
             {
-                Inventory.SyncItemInfo curCard = CurrentKeycard(ev.Player);
-                if (ev.Pickup.ItemId <= curCard.id)
+                Item curCard = CurrentKeycard(ev.Player);
+                if (ev.Pickup.Type <= curCard.Type)
                 {
                     ev.Player.ShowHint("Your keycard is already a higher grade!");
                     return;
                 }
 
-                if (ev.Pickup.ItemId - 1 > curCard.id)
+                if (ev.Pickup.Type - 1 > curCard.Type)
                 {
                     ev.Player.ShowHint("You need to find a lower tier card first!");
                     return;
                 }
 
-                curCard.id++;
-                ev.Player.ShowHint($"Upgraded! Next one is: {curCard.id+1.ToString()}");
+                ev.Player.RemoveItem(curCard);
+                Item item = ev.Player.AddItem(curCard.Type+1);
+                ev.Player.CurrentItem = item;
+                ev.Player.ShowHint($"Upgraded! Next one is: {Enum.GetName(typeof(ItemType), curCard.Type+1)}");
             }
-            else if (ev.Pickup.ItemId == ItemType.SCP207)
+            else if (ev.Pickup.Type == ItemType.SCP207)
             {
                 if (ev.Player.GetEffectActive<Scp207>())
                 {
@@ -212,13 +217,13 @@ namespace EventfulLaboratory.slevents
 
         void MapItemSpawn(SpawningItemEventArgs ev)
         {
-            if (ev.Id != ItemType.SCP207)
+            if (ev.Pickup.Type != ItemType.SCP207)
                 ev.IsAllowed = false;
         }
 
         void PlayerHurt(HurtingEventArgs ev)
         {
-            if (ev.DamageType.isScp || ev.DamageType.isWeapon || ev.DamageType == DamageTypes.Wall)
+            if (ev.DamageType.Weapon.IsScp() || ev.DamageType.Weapon.IsWeapon() || ev.DamageType == DamageTypes.Wall)
                 ev.IsAllowed = false;
         }
 
@@ -226,6 +231,6 @@ namespace EventfulLaboratory.slevents
 
         #endregion
 
-        Inventory.SyncItemInfo CurrentKeycard(Player ply) => ply.Inventory.items.First(kc => kc.id.IsKeycard());
+        Item CurrentKeycard(Player ply) => Item.Get(ply.Inventory.UserInventory.Items.First(kc => kc.Value.ItemTypeId.IsKeycard()).Value);
     }
 }

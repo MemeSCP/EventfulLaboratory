@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using CameraShaking;
 using EventfulLaboratory.Extension;
 using EventfulLaboratory.Handler;
 using EventfulLaboratory.structs;
@@ -8,10 +9,12 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
-
+using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Firearms.Attachments;
 using MEC;
 using UnityEngine;
 using UnityEngine.UI;
+using Firearm = Exiled.API.Features.Items.Firearm;
 using Random = System.Random;
 using Server = Exiled.Events.Handlers.Server;
 
@@ -19,8 +22,8 @@ namespace EventfulLaboratory.slevents
 {
     public class TeamWarfare : AEvent
     {
-        private const RoleType _team1 = RoleType.NtfLieutenant;
-        private const RoleType _team2 = RoleType.ChaosInsurgency;
+        private const RoleType _team1 = RoleType.NtfCaptain;
+        private const RoleType _team2 = RoleType.ChaosRifleman;
 
         private static Random _rng;
 
@@ -32,17 +35,20 @@ namespace EventfulLaboratory.slevents
         {
             ItemType.Adrenaline,
             ItemType.Medkit,
-            ItemType.GrenadeFrag
+            ItemType.GrenadeHE
         };
 
         private static readonly ItemType[] _weapons =
         {
+            ItemType.GunCrossvec,
             ItemType.GunLogicer,
-            ItemType.GunProject90,
-            ItemType.GunMP7,
+            ItemType.GunRevolver,
+            ItemType.GunShotgun,
+            ItemType.GunAK,
             ItemType.GunCOM15,
+            ItemType.GunCOM18,
             ItemType.GunE11SR,
-            ItemType.GunUSP
+            ItemType.GunFSP9,
         };
 
         private static int _maxScore = 50;
@@ -58,9 +64,9 @@ namespace EventfulLaboratory.slevents
         {
             _rng = new Random();
             _roundWeapon = _weapons[_rng.Next(_weapons.Length)];
-            _attachments[0] = _rng.Next(3);
+            /*_attachments[0] = _rng.Next(3);
             _attachments[1] = _rng.Next(4);
-            _attachments[2] = _rng.Next(4);
+            _attachments[2] = _rng.Next(4);*/
             _kda = new Dictionary<int, KdaHolder>();
 
             _teamHandler = new EvenTeamSplitHandler(_team1, _team2, true);
@@ -125,7 +131,7 @@ namespace EventfulLaboratory.slevents
                 UpdateKdaOfUser(ev.Killer);
                 AddToKda(ev.Target.Id, false);
                 UpdateKdaOfUser(ev.Target);
-                if (ev.Killer.Role == RoleType.ChaosInsurgency)
+                if (ev.Killer.Role == RoleType.ChaosRifleman)
                     _chaosKills++;
                 else
                     _ntfKills++;
@@ -141,13 +147,13 @@ namespace EventfulLaboratory.slevents
                 {
                     Common.Broadcast(30, "Chaos Wins!", true);
                     Common.LockRound(false);
-                    Common.ForceEndRound(RoleType.ChaosInsurgency);
+                    Common.ForceEndRound(RoleType.ChaosRifleman);
                 }
                 else if (_chaosKills < _ntfKills)
                 {
                     Common.Broadcast(30, "NTF Wins!", true);
                     Common.LockRound(false);
-                    Common.ForceEndRound(RoleType.NtfCommander);
+                    Common.ForceEndRound(RoleType.NtfCaptain);
                 }
                 else
                 {
@@ -171,18 +177,43 @@ namespace EventfulLaboratory.slevents
             
             yield return Timing.WaitForSeconds(0.1f);
             foreach (var item in _spawnItems) player.AddItem(item);
-            player.Ammo[(int) AmmoType.Nato9] = 3000;
-            player.Ammo[(int) AmmoType.Nato556] = 3000;
-            player.Ammo[(int) AmmoType.Nato762] = 3000;
-
-            //TODO: Attachments blacklist
-            var sif = new Inventory.SyncItemInfo
+            foreach (var ammoKey in player.Ammo.Keys)
             {
-                id = _roundWeapon,
-                durability = _roundWeapon == ItemType.GunLogicer ? 100f : 30f,
-                modBarrel = _attachments[0],
-                modOther = _attachments[1],
-                modSight = _attachments[2]
+                player.Ammo[ammoKey] = 3000;
+            }
+            
+            var sif = new Firearm(_roundWeapon)
+            {
+                /*Attachments = new []
+                {
+                    new FirearmAttachment
+                    {
+                        Name = AttachmentNameTranslation.Flashlight,
+                        Settings = new AttachmentSettings()
+                        {
+                            PhysicalLength = 20,
+                            Weight = 20000
+                        },
+                        Slot = AttachmentSlot.Sight
+                    },
+                    new FirearmAttachment
+                    {
+                        Name = AttachmentNameTranslation.Laser,
+                        Settings = new AttachmentSettings()
+                        {
+                            PhysicalLength = 30,
+                            Weight = -2
+                        },
+                        Slot = AttachmentSlot.Ammunition
+                    }
+                },*/
+                Ammo = 30,
+                FireRate = 3,
+                Recoil = new RecoilSettings()
+                {
+                    UpKick = 3
+                },
+                Scale = new Vector3(1, 1, 1)
             };
             player.AddItem(sif);
             player.IsGodModeEnabled = true;
