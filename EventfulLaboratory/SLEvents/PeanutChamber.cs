@@ -20,6 +20,7 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
             Common.LockRound();
             Common.LockAllDoors();
+            //TODO: Replace Shelter with other place
             _shelter = Common.GetEvacuationZone();
             Exiled.Events.Handlers.Player.Joined += PreRoundJoin;
             if (_shelter != null)

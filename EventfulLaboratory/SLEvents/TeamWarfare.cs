@@ -8,6 +8,7 @@ using EventfulLaboratory.structs;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
@@ -28,8 +29,6 @@ namespace EventfulLaboratory.slevents
         private static Random _rng;
 
         private static ItemType _roundWeapon;
-
-        private static readonly int[] _attachments = {0, 0, 0};
 
         private static readonly ItemType[] _spawnItems =
         {
@@ -64,14 +63,13 @@ namespace EventfulLaboratory.slevents
         {
             _rng = new Random();
             _roundWeapon = _weapons[_rng.Next(_weapons.Length)];
-            /*_attachments[0] = _rng.Next(3);
-            _attachments[1] = _rng.Next(4);
-            _attachments[2] = _rng.Next(4);*/
             _kda = new Dictionary<int, KdaHolder>();
 
             _teamHandler = new EvenTeamSplitHandler(_team1, _team2, true);
 
             Server.RestartingRound += OnRoundRestart;
+            
+            Log.Info("Round weapon:" + _roundWeapon);
         }
 
         public override void OnRoundStart()
@@ -94,20 +92,11 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Player.Left += OnPlayerLeft;
         }
 
-        private void OnPlayerJoin(JoinedEventArgs ev)
-        {
-            SpawnPlayer(ev.Player);
-        }
+        private void OnPlayerJoin(JoinedEventArgs ev) => SpawnPlayer(ev.Player);
 
-        private void OnPlayerLeft(LeftEventArgs ev)
-        {
-            _teamHandler.SetDirty();
-        }
+        private void OnPlayerLeft(LeftEventArgs ev) => _teamHandler.SetDirty();
 
-        private void OnRoundRestart()
-        {
-            OnRoundEnd();
-        }
+        private void OnRoundRestart() => OnRoundEnd();
 
         public override void OnRoundEnd()
         {
@@ -116,10 +105,7 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Player.Left -= OnPlayerLeft;
         }
 
-        private string FormatScore()
-        {
-            return "<color=green>Chaos:</color> " + _chaosKills + " <color=red>||</color> <color=blue>NTF:</color> " + _ntfKills;
-        }
+        private string FormatScore() => "<color=green>Chaos:</color> " + _chaosKills + " <color=red>||</color> <color=blue>NTF:</color> " + _ntfKills;
 
 
         private void CountAndRespawnKills(DiedEventArgs ev)
@@ -177,45 +163,21 @@ namespace EventfulLaboratory.slevents
             
             yield return Timing.WaitForSeconds(0.1f);
             foreach (var item in _spawnItems) player.AddItem(item);
-            foreach (var ammoKey in player.Ammo.Keys)
-            {
-                player.Ammo[ammoKey] = 3000;
-            }
             
-            var sif = new Firearm(_roundWeapon)
-            {
-                /*Attachments = new []
-                {
-                    new FirearmAttachment
-                    {
-                        Name = AttachmentNameTranslation.Flashlight,
-                        Settings = new AttachmentSettings()
-                        {
-                            PhysicalLength = 20,
-                            Weight = 20000
-                        },
-                        Slot = AttachmentSlot.Sight
-                    },
-                    new FirearmAttachment
-                    {
-                        Name = AttachmentNameTranslation.Laser,
-                        Settings = new AttachmentSettings()
-                        {
-                            PhysicalLength = 30,
-                            Weight = -2
-                        },
-                        Slot = AttachmentSlot.Ammunition
-                    }
-                },*/
-                Ammo = 30,
-                FireRate = 3,
-                Recoil = new RecoilSettings()
-                {
-                    UpKick = 3
-                },
-                Scale = new Vector3(1, 1, 1)
-            };
-            player.AddItem(sif);
+            player.Ammo.Clear();
+            
+            
+            Log.Info("Round weapon:" + _roundWeapon);
+
+            Timing.WaitForSeconds(.3f);
+            
+            var playerWeapon = (Firearm) player.AddItem(_roundWeapon);
+            
+            Log.Info($"Waep ammo {playerWeapon.AmmoType}");
+            player.Ammo[playerWeapon.AmmoType.GetItemType()] = 120;
+            
+            player.Inventory.ServerSelectItem(playerWeapon.Serial);
+            
             player.IsGodModeEnabled = true;
             yield return Timing.WaitForSeconds(5);
             player.IsGodModeEnabled = false;
@@ -238,30 +200,21 @@ namespace EventfulLaboratory.slevents
 
         private void UpdateKdaOfUser(Player player)
         {
-            if (EventfulLab.Instance.Config.EnableTagModifications)
-            {
-                string kdaString;
-                if (_kda.ContainsKey(player.Id))
-                {
-                    kdaString = _kda[player.Id].ToString();
-                }
-                else
-                {
-                    kdaString = "/0|0/";
-                }
+            if (!EventfulLab.Instance.Config.EnableTagModifications) return;
 
-                var text = player.RankName ?? "";
-                if (text.Contains("/")) text = text.Split('/')[2];
-                player.RankName = $"{kdaString} {text.TrimStart()}";
-                player.UpdateRankColorToRole();
-            }
+            var kdaString = _kda.ContainsKey(player.Id) ? _kda[player.Id].ToString() : "/0|0/";
+
+            var text = player.RankName ?? "";
+            if (text.Contains("/")) text = text.Split('/')[2];
+            player.RankName = $"{kdaString} {text.TrimStart()}";
+            player.UpdateRankColorToRole();
         }
     }
     
     internal class KdaHolder
     {
-        public int Kill { get; private set; }
-        public int Death { get; private set; }
+        private int Kill { get; set; }
+        private int Death { get; set; }
 
         public KdaHolder(int kill, int death)
         {
@@ -269,8 +222,9 @@ namespace EventfulLaboratory.slevents
             Death = death;
         }
 
-        public int AddKill(int amount = 1) => Kill += amount;
-        public int AddDeath(int amount = 1) => Death += amount;
+        public void AddKill(int amount = 1) => Kill += amount;
+
+        public void AddDeath(int amount = 1) => Death += amount;
 
         public override string ToString() => $"/{Kill}/{Death}";
     }

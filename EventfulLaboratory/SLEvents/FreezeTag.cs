@@ -8,6 +8,7 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
+using InventorySystem.Items.Firearms.Attachments;
 using MEC;
 using UnityEngine;
 
@@ -15,8 +16,6 @@ namespace EventfulLaboratory.slevents
 {
     public class FreezeTag : AEvent
     {
-        //TODO: Players into hashMap
-
         private readonly RoleType _ntfRole = RoleType.NtfPrivate;
         private readonly RoleType _chaosRole = RoleType.ChaosMarauder;
 
@@ -45,11 +44,13 @@ namespace EventfulLaboratory.slevents
                         doorVariant.ChangeLock(DoorLockType.AdminCommand);
                 }
             }
+            
             Exiled.Events.Handlers.Player.Hurting += OnPlayerHurtProxy;
             Exiled.Events.Handlers.Player.Handcuffing += OnCuffEvent;
             Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
             Exiled.Events.Handlers.Player.Joined += OnPlayerJoined;
             Exiled.Events.Handlers.Player.Left += OnPlayerLeft;
+            Exiled.Events.Handlers.Player.Shot += OnPlayerShot;
         }
 
         public override void OnRoundEnd()
@@ -64,6 +65,7 @@ namespace EventfulLaboratory.slevents
             Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
             Exiled.Events.Handlers.Player.Joined -= OnPlayerJoined;
             Exiled.Events.Handlers.Player.Left -= OnPlayerLeft;
+            Exiled.Events.Handlers.Player.Shot -= OnPlayerShot;
         }
 
         private RoleType DetermineThawedRole(RoleType role)
@@ -96,8 +98,8 @@ namespace EventfulLaboratory.slevents
 
         private IEnumerator<float> SpawnPlayerAsThawed(Player player)
         {
-            RoleType targetRole = DetermineThawedRole(_teamHandler.GetSetRole(player));
-            Vector3 loc = player.Position;
+            var targetRole = DetermineThawedRole(_teamHandler.GetSetRole(player));
+            var loc = player.Position;
             
             player.ClearInventory();
             
@@ -116,11 +118,24 @@ namespace EventfulLaboratory.slevents
         }
         private IEnumerator<float> SpawnHubAsParameter(Player player)
         {
-            RoleType role = _teamHandler.GetSetRole(player);
+            var role = _teamHandler.GetSetRole(player);
             yield return Timing.WaitForSeconds(0.3f);
             player.SetRole(role);
             yield return Timing.WaitForSeconds(0.1f);
-            Item newItem = player.AddItem(ItemType.GunCOM15);
+            player.ClearInventory();
+            yield return Timing.WaitForSeconds(0.1f);
+            
+            var newItem = ((Firearm)player.AddItem(ItemType.GunCOM15));
+            newItem.Attachments = new[]
+            {
+                new FirearmAttachment
+                {
+                    Name = AttachmentNameTranslation.AmmoCounter,
+                    IsEnabled = true,
+                    Slot = AttachmentSlot.Sight
+                }
+            };
+            
             player.Inventory.ServerSelectItem(newItem.Serial);
             player.EnableEffect<Scp207>();
             player.GetEffect(EffectType.Scp207).Intensity = 1;
@@ -136,6 +151,11 @@ namespace EventfulLaboratory.slevents
         #endregion
         
         #region Events
+
+        private void OnPlayerShot(ShotEventArgs ev)
+        {
+            ((Firearm)ev.Shooter.CurrentItem).Ammo = ((Firearm)ev.Shooter.CurrentItem).MaxAmmo;
+        }
 
         private void OnPlayerJoined(JoinedEventArgs ev)
         {
@@ -190,20 +210,21 @@ namespace EventfulLaboratory.slevents
                     break;
             }
 
-            if (!isChaos || !isNtf)
-            {
-                RoleType toRole = (!isChaos && isNtf ? _ntfRole : _chaosRole);
-                Common.Broadcast(5, "Game End.\nThanks for playing!\nWinner: " + (toRole), true);
+            if (isChaos && isNtf) yield break;
+            
+            
+            var toRole = (!isChaos && isNtf ? _ntfRole : _chaosRole);
+            Common.Broadcast(5, "Game End.\nThanks for playing!\nWinner: " + (toRole), true);
                 
-                yield return Timing.WaitForSeconds(2F);
-                Common.ForceEndRound(toRole);
-            }
+            yield return Timing.WaitForSeconds(2F);
+            Common.ForceEndRound(toRole);
         }
         
         private void OnCuffEvent(HandcuffingEventArgs ev)
         {
-            RoleType source = ev.Cuffer.Role;
-            RoleType target = ev.Target.Role;
+            var source = ev.Cuffer.Role;
+            var target = ev.Target.Role;
+            
             if (
                 source == _ntfRole && target == RoleType.ClassD ||
                 source == _chaosRole && target == RoleType.Scientist
@@ -211,7 +232,7 @@ namespace EventfulLaboratory.slevents
             {
                 //Allowed to do cuffing
                 Timing.RunCoroutine(RandomPlayerRespawn(ev.Target));
-                string color = ev.Cuffer.Role == _chaosRole ? "green" : "blue";
+                var color = ev.Cuffer.Role == _chaosRole ? "green" : "blue";
                 AnnounceUnthawing(ev.Cuffer, ev.Target, color , color);
             }
             else

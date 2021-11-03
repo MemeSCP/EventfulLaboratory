@@ -26,6 +26,7 @@ namespace EventfulLaboratory
 
         //TODO: Make it per-round getsetter
         [CanBeNull]
+        [Obsolete("There is no Evacuation zone anymore. :Biblethump:")]
         public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
 
         public static Room GetRoomByName(string roomName) =>
@@ -92,10 +93,11 @@ namespace EventfulLaboratory
         public static Room GetRandomHeavyRoom()
         {
             List<Room> hczRooms = Map.Rooms.Where(room =>
-                room.Name.Contains("HCZ") &&
-                !room.Name.Contains("Tesla") &&
-                !room.Name.Contains("EZ_Checkpoint") &&
-                !room.Name.Contains("049")
+                room.Zone == ZoneType.HeavyContainment &&
+                room.Type != RoomType.HczTesla &&
+                room.Type != RoomType.HczEzCheckpoint &&
+                room.Type != RoomType.Hcz049 &&
+                room.Type != RoomType.Hcz939
             ).ToList();
             return hczRooms[rng.Next(hczRooms.Count - 1)];
         }
