@@ -25,7 +25,7 @@ namespace EventfulLaboratory.slevents
             for (int i = 1; i < parts.Length; i++)
             {
                 var part = parts[i].Split('|');
-                Common.HandleSpawning(
+                Util.BuilderUtil.HandleSpawning(
                     part[0],
                     part[1].ParseVec3(),
                     part[2].ParseQuat(),

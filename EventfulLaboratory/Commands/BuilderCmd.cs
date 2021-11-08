@@ -10,7 +10,7 @@ using MEC;
 using Mirror;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using static EventfulLaboratory.Common;
+using static EventfulLaboratory.Util;
 
 //KDE2LjIsIDEwMDcuNSwgLTU5LjIpJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTYuMiwgMTAwNy41LCAtNTkuMil8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgxLjAsIDEuMCwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE2LjIsIDEwMDcuOSwgLTU4LjApfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMC43LCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTkuNSwgMTAwNy45LCAtNjAuNSl8KDAuNSwgLTAuNSwgLTAuNSwgMC41KXwoMC40LCAwLjcsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS42LCAxMDA3LjksIC01OC4yKXwoMC4wLCAwLjAsIDAuNywgMC43KXwoMC40LCAxLjAsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxNi4xLCAxMDA3LjksIC02MC4yKXwoMC4wLCAwLjAsIDAuNywgLTAuNyl8KDAuNCwgMS4wLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMywgMTAwOC41LCAtNjAuNyl8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjMsIDEwMDguNSwgLTU3LjcpfCgwLjUsIC0wLjUsIC0wLjUsIC0wLjUpfCgwLjUsIDEuNSwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjMsIDEwMDguNSwgLTU5LjIpfCgwLjUsIDAuNSwgLTAuNSwgMC41KXwoMS4wLCAwLjMsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgxOS4zLCAxMDA4LjUsIC01OS4yKXwoMC41LCAwLjUsIC0wLjUsIDAuNSl8KDEuMCwgMC4zLCAxLjApJUhDWiBCcmVha2FibGVEb29yKENsb25lKXwoMTUuMSwgMTAwOS4xLCAtNjEuMil8KDAuMCwgMC4wLCAwLjcsIC0wLjcpfCgwLjQsIDEuNiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDIwLjYsIDEwMDkuMSwgLTU3LjIpfCgwLjcsIC0wLjcsIDAuMCwgMC4wKXwoMC40LCAxLjYsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgyMC4yLCAxMDA5LjEsIC02MS40KXwoMC41LCAtMC41LCAtMC41LCAwLjUpfCgwLjQsIDEuMiwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDE1LjIsIDEwMDkuMSwgLTU3LjEpfCgwLjUsIC0wLjUsIDAuNSwgLTAuNSl8KDAuNCwgMS4yLCAxLjAp
 
@@ -176,7 +176,7 @@ namespace EventfulLaboratory.Commands
                         var ray = ev.Shooter.Raytrace();
                         if (ray.IsHit())
                         {
-                            _builtPlatformKeeper.Add(JustFuckingSpawnADoor(ray.point + new Vector3(0, 0.5f, 0f)));
+                            _builtPlatformKeeper.Add(BuilderUtil.JustFuckingSpawnADoor(ray.point + new Vector3(0, 0.5f, 0f)));
                             Hint($"Door spawned at shot location\n{ray.point}\n{ev.Shooter.Position}");
                         }
                         else
@@ -559,7 +559,7 @@ namespace EventfulLaboratory.Commands
                     HandleGScl(args);
                     return true;
                 case "door":
-                    var newDoor = Common.JustFuckingSpawnADoor(_center);
+                    var newDoor = BuilderUtil.JustFuckingSpawnADoor(_center);
                     _builtPlatformKeeper.Add(newDoor);
                     TargetObject = newDoor;
                     RA($"Added door to {_center}");
@@ -576,7 +576,7 @@ namespace EventfulLaboratory.Commands
                     {
                         RA($"4/{i}");
                         var part = parts[i].Split('|');
-                        var obj = HandleSpawning(
+                        var obj = BuilderUtil.HandleSpawning(
                             part[0],
                             part[1].ParseVec3(),
                             part[2].ParseQuat(),
@@ -595,7 +595,7 @@ namespace EventfulLaboratory.Commands
                     return true;
                 case "copy":
                 {
-                    var newObj = HandleSpawning(
+                    var newObj = BuilderUtil.HandleSpawning(
                         TargetObject.name,
                         TargetObject.transform.position,
                         TargetObject.transform.rotation,
@@ -614,7 +614,7 @@ namespace EventfulLaboratory.Commands
                 }
                 case "spawn":
                 {
-                    var newObj = HandleSpawning(
+                    var newObj = BuilderUtil.HandleSpawning(
                         args[2],
                         BuilderPlayer.GameObject.transform.position,
                         Quaternion.identity,

@@ -49,7 +49,7 @@ namespace EventfulLaboratory.Commands
                 return false;
             }
             response = "Event " + EventfulLab.NextEvent.GetName() + " will be played on next round.";
-            Common.Broadcast(10, "Next event round: " + EventfulLab.NextEvent.GetName(), true);
+            Util.PlayerUtil.GlobalBroadcast(10, "Next event round: " + EventfulLab.NextEvent.GetName(), true);
              return true;
         }
 

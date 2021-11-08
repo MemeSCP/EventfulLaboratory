@@ -17,11 +17,11 @@ namespace EventfulLaboratory.slevents
         
         public override void OnRoundStart()
         {
-            Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
-            Common.LockRound();
-            Common.LockAllDoors();
+            Exiled.Events.Handlers.Server.RespawningTeam += Util.RoundUtils.PreventRespawnEvent;
+            Util.RoundUtils.LockRound();
+            Util.MapUtil.LockAllDoors();
             //TODO: Replace Shelter with other place
-            _shelter = Common.GetEvacuationZone();
+            _shelter = Util.MapUtil.GetEvacuationZone();
             Exiled.Events.Handlers.Player.Joined += PreRoundJoin;
             if (_shelter != null)
             {
@@ -80,15 +80,15 @@ namespace EventfulLaboratory.slevents
             }
             else
             {
-                Common.Broadcast(3, Constant.PEANUT_CHAMBER_END);
-                Common.LockRound(false);
+                Util.PlayerUtil.GlobalBroadcast(3, Constant.PEANUT_CHAMBER_END);
+                Util.RoundUtils.LockRound(false);
             }
         }
 
         public override void OnRoundEnd()
         {
             Exiled.Events.Handlers.Player.Died -= OnKill;
-            Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam -= Util.RoundUtils.PreventRespawnEvent;
         }
 
         public override void Disable()
@@ -101,7 +101,7 @@ namespace EventfulLaboratory.slevents
             yield return Timing.WaitForSeconds(3f);
             for (int i = 10; i > 0; i--)
             {
-                Common.Broadcast(1, "Round starts in " + i + " seconds.");
+                Util.PlayerUtil.GlobalBroadcast(1, "Round starts in " + i + " seconds.");
                 yield return Timing.WaitForSeconds(1);
             }
             yield return Timing.WaitForSeconds(3f);

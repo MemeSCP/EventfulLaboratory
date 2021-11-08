@@ -25,11 +25,11 @@ namespace EventfulLaboratory.slevents
         {
             _teamHandler = new EvenTeamSplitHandler(_ntfRole, _chaosRole, false);
             
-            Common.Broadcast(20, "<size=20>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.\n<color=green>Chaos Insurgency</color> becomes <color=yellow>Scientist></color>\n<color=blue>NTF</color> becomes <color=orange>ClassD</color>.\nUnthawing works by cuffing the correct user!</size>");
-            Common.LockRound();
-            Common.DisableElevators();
-            Common.ToggleLockEntranceGate();
-            Common.ToggleTeslats();
+            Util.PlayerUtil.GlobalBroadcast(20, "<size=20>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.\n<color=green>Chaos Insurgency</color> becomes <color=yellow>Scientist></color>\n<color=blue>NTF</color> becomes <color=orange>ClassD</color>.\nUnthawing works by cuffing the correct user!</size>");
+            Util.RoundUtils.LockRound();
+            Util.MapUtil.DisableElevators();
+            Util.MapUtil.ToggleLockEntranceGate();
+            Util.MapUtil.ToggleTeslats();
             
             foreach (var player in Player.List)
             {
@@ -47,7 +47,7 @@ namespace EventfulLaboratory.slevents
             
             Exiled.Events.Handlers.Player.Hurting += OnPlayerHurtProxy;
             Exiled.Events.Handlers.Player.Handcuffing += OnCuffEvent;
-            Exiled.Events.Handlers.Server.RespawningTeam += Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam += Util.RoundUtils.PreventRespawnEvent;
             Exiled.Events.Handlers.Player.Joined += OnPlayerJoined;
             Exiled.Events.Handlers.Player.Left += OnPlayerLeft;
             Exiled.Events.Handlers.Player.Shot += OnPlayerShot;
@@ -62,7 +62,7 @@ namespace EventfulLaboratory.slevents
         {
             Exiled.Events.Handlers.Player.Hurting -= OnPlayerHurtProxy;
             Exiled.Events.Handlers.Player.Handcuffing -= OnCuffEvent;
-            Exiled.Events.Handlers.Server.RespawningTeam -= Common.PreventRespawnEvent;
+            Exiled.Events.Handlers.Server.RespawningTeam -= Util.RoundUtils.PreventRespawnEvent;
             Exiled.Events.Handlers.Player.Joined -= OnPlayerJoined;
             Exiled.Events.Handlers.Player.Left -= OnPlayerLeft;
             Exiled.Events.Handlers.Player.Shot -= OnPlayerShot;
@@ -88,7 +88,7 @@ namespace EventfulLaboratory.slevents
             yield return Timing.WaitUntilDone(SpawnHubAsParameter(player));
             yield return Timing.WaitForSeconds(1f);
             player.RestoreWalking();
-            player.Position = Common.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0);
+            player.Position = Util.MapUtil.GetRandomHeavyRoom().Position + new Vector3(0, 4, 0);
         }
         
         private IEnumerator<float> RandomPlayerRespawn(Player player)
@@ -126,15 +126,6 @@ namespace EventfulLaboratory.slevents
             yield return Timing.WaitForSeconds(0.1f);
             
             var newItem = ((Firearm)player.AddItem(ItemType.GunCOM15));
-            newItem.Attachments = new[]
-            {
-                new FirearmAttachment
-                {
-                    Name = AttachmentNameTranslation.AmmoCounter,
-                    IsEnabled = true,
-                    Slot = AttachmentSlot.Sight
-                }
-            };
             
             player.Inventory.ServerSelectItem(newItem.Serial);
             player.EnableEffect<Scp207>();
@@ -214,10 +205,10 @@ namespace EventfulLaboratory.slevents
             
             
             var toRole = (!isChaos && isNtf ? _ntfRole : _chaosRole);
-            Common.Broadcast(5, "Game End.\nThanks for playing!\nWinner: " + (toRole), true);
+            Util.PlayerUtil.GlobalBroadcast(5, "Game End.\nThanks for playing!\nWinner: " + (toRole), true);
                 
             yield return Timing.WaitForSeconds(2F);
-            Common.ForceEndRound(toRole);
+            Util.RoundUtils.ForceEndRound(toRole);
         }
         
         private void OnCuffEvent(HandcuffingEventArgs ev)
@@ -246,14 +237,14 @@ namespace EventfulLaboratory.slevents
 
         private void AnnounceThawing(Player thawer, Player target, string color1, string color2)
         {
-            Common.Hint(5,
+            Util.PlayerUtil.GlobalHint(5,
                 $"<color={color1}>{thawer.Nickname}</color> has been thawed by <color={color2}>{target.Nickname}</color>!",
                 true);
         }
 
         private void AnnounceUnthawing(Player thawer, Player target, string color1, string color2)
         {
-            Common.Hint(5,
+            Util.PlayerUtil.GlobalHint(5,
                 $"<color={color1}>{target.Nickname}</color> has been <size=30>unthawed</size> by <color={color2}>{thawer.Nickname}</color>!",
                 true);
         }

@@ -34,9 +34,9 @@ namespace EventfulLaboratory.slevents
         #region Overrides
         public override void OnNewRound()
         {
-            Common.LockRound();
+            Util.RoundUtils.LockRound();
             PlayerEvent.Joined += PlayerJoinedProxy;
-            ServerEvent.RespawningTeam += Common.PreventRespawnEvent;
+            ServerEvent.RespawningTeam += Util.RoundUtils.PreventRespawnEvent;
             PlayerEvent.DroppingItem += PreventDropping;
             Timing.RunCoroutine(StartRound());
         }
@@ -50,7 +50,7 @@ namespace EventfulLaboratory.slevents
         {
             PlayerEvent.Joined -= PlayerJoinedProxy;
             PlayerEvent.DroppingItem -= PreventDropping;
-            ServerEvent.RespawningTeam -= Common.PreventRespawnEvent;
+            ServerEvent.RespawningTeam -= Util.RoundUtils.PreventRespawnEvent;
             if (!_roundStarted) return;
             
             PlayerEvent.PickingUpItem -= PlayerPickup;
@@ -78,7 +78,7 @@ namespace EventfulLaboratory.slevents
                 _roundStartCountdown--;
                 if (_roundStartCountdown < 1)
                 {
-                    Common.Broadcast(2, "Round is starting!", true);
+                    Util.PlayerUtil.GlobalBroadcast(2, "Round is starting!", true);
                     Cassie.Message("Go");
                     
                     yield return Timing.WaitForSeconds(1f);
@@ -102,7 +102,7 @@ namespace EventfulLaboratory.slevents
                     break;
                 }
 
-                Common.Broadcast(1, $"Round starts in {_roundStartCountdown} seconds.", true);
+                Util.PlayerUtil.GlobalBroadcast(1, $"Round starts in {_roundStartCountdown} seconds.", true);
                 if (_roundStartCountdown <= 3) 
                     Cassie.Message(_roundStartCountdown.ToString(), false, false);
                 
@@ -122,7 +122,7 @@ namespace EventfulLaboratory.slevents
                 yield return Timing.WaitForSeconds(0.1f);
                 ev.Player.SetRole(RoleType.Tutorial);
                 yield return Timing.WaitForSeconds(0.1f);
-                ev.Player.Position = Common.GetEvacuationZone().Position + new Vector3(0, 1f, 0);
+                ev.Player.Position = Util.MapUtil.GetEvacuationZone().Position + new Vector3(0, 1f, 0);
                 ev.Player.ShowHint(
                     $"<size=50>Welcome to the Amazing Race!</size>\nYour goal is to escape the facility.\nNo 914, Only ClassD\nFind the keycards\n<size=50><color=red>ONLY WHO HAS O5 CAN ESCAPE!</color></size>\n\nGood Luck. You have {_roundMinutes} minutes.",
                     10F);
@@ -192,19 +192,19 @@ namespace EventfulLaboratory.slevents
                 {
                     if (_roundRemainingSeconds % 60 == 0)
                     {
-                        Common.Broadcast(3, $"You have {_roundRemainingSeconds / 60} minutes left.");
+                        Util.PlayerUtil.GlobalBroadcast(3, $"You have {_roundRemainingSeconds / 60} minutes left.");
                     }
                 }
                 else
                 {
-                    Common.Broadcast(1, _roundRemainingSeconds.ToString());
+                    Util.PlayerUtil.GlobalBroadcast(1, _roundRemainingSeconds.ToString());
                     
                 }
 
                 _roundRemainingSeconds--;
                 yield return Timing.WaitForSeconds(1f);
             }
-            Common.Broadcast(3, "Times up!");
+            Util.PlayerUtil.GlobalBroadcast(3, "Times up!");
             foreach (var player in Player.List)
             {
                 if (player.Role != RoleType.ClassD) continue;

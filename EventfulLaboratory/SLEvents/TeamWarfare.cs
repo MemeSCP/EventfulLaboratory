@@ -29,6 +29,7 @@ namespace EventfulLaboratory.slevents
         private static Random _rng;
 
         private static ItemType _roundWeapon;
+        private static uint _attachmentCode;
 
         private static readonly ItemType[] _spawnItems =
         {
@@ -63,6 +64,8 @@ namespace EventfulLaboratory.slevents
         {
             _rng = new Random();
             _roundWeapon = _weapons[_rng.Next(_weapons.Length)];
+            _attachmentCode = AttachmentsUtils.GetRandomAttachmentsCode(_roundWeapon);
+            
             _kda = new Dictionary<int, KdaHolder>();
 
             _teamHandler = new EvenTeamSplitHandler(_team1, _team2, true);
@@ -75,7 +78,7 @@ namespace EventfulLaboratory.slevents
         public override void OnRoundStart()
         {
             _maxScore = Player.List.ToList().Count * 2 + 10;
-            Common.LockRound();
+            Util.RoundUtils.LockRound();
             _ntfKills = 0;
             _chaosKills = 0;
             
@@ -85,14 +88,14 @@ namespace EventfulLaboratory.slevents
                 player.Broadcast(5, "Welcome to TeamWarfare! First team to get " + _maxScore + " kills wins the round!");
             }
 
-            Common.DisableElevators();
+            Util.MapUtil.DisableElevators();
 
             Exiled.Events.Handlers.Player.Died += CountAndRespawnKills;
             Exiled.Events.Handlers.Player.Joined += OnPlayerJoin;
             Exiled.Events.Handlers.Player.Left += OnPlayerLeft;
         }
 
-        private void OnPlayerJoin(JoinedEventArgs ev) => SpawnPlayer(ev.Player);
+        private void OnPlayerJoin(JoinedEventArgs ev) => Timing.RunCoroutine(SpawnPlayer(ev.Player));
 
         private void OnPlayerLeft(LeftEventArgs ev) => _teamHandler.SetDirty();
 
@@ -131,26 +134,26 @@ namespace EventfulLaboratory.slevents
             {
                 if (_chaosKills > _ntfKills)
                 {
-                    Common.Broadcast(30, "Chaos Wins!", true);
-                    Common.LockRound(false);
-                    Common.ForceEndRound(RoleType.ChaosRifleman);
+                    Util.PlayerUtil.GlobalBroadcast(30, "Chaos Wins!", true);
+                    Util.RoundUtils.LockRound(false);
+                    Util.RoundUtils.ForceEndRound(RoleType.ChaosRifleman);
                 }
                 else if (_chaosKills < _ntfKills)
                 {
-                    Common.Broadcast(30, "NTF Wins!", true);
-                    Common.LockRound(false);
-                    Common.ForceEndRound(RoleType.NtfCaptain);
+                    Util.PlayerUtil.GlobalBroadcast(30, "NTF Wins!", true);
+                    Util.RoundUtils.LockRound(false);
+                    Util.RoundUtils.ForceEndRound(RoleType.NtfCaptain);
                 }
                 else
                 {
-                    Common.Broadcast(30, "Tie?", true);
-                    Common.LockRound(false);
-                    Common.ForceEndRound(RoleType.None);
+                    Util.PlayerUtil.GlobalBroadcast(30, "Tie?", true);
+                    Util.RoundUtils.LockRound(false);
+                    Util.RoundUtils.ForceEndRound(RoleType.None);
                 }
             }
             else
             {
-                Common.Broadcast(60, FormatScore(), true);
+                Util.PlayerUtil.GlobalBroadcast(60, FormatScore(), true);
                 Timing.RunCoroutine(SpawnPlayer(ev.Target));
             }
         }
@@ -170,8 +173,13 @@ namespace EventfulLaboratory.slevents
             Log.Info("Round weapon:" + _roundWeapon);
 
             Timing.WaitForSeconds(.3f);
+
+            var playerWeapon = new Firearm(_roundWeapon);
+            playerWeapon.Base.ApplyAttachmentsCode(_attachmentCode, false);
             
-            var playerWeapon = (Firearm) player.AddItem(_roundWeapon);
+            Log.Info(playerWeapon.ToString());
+
+            player.AddItem(playerWeapon);
             
             Log.Info($"Waep ammo {playerWeapon.AmmoType}");
             player.Ammo[playerWeapon.AmmoType.GetItemType()] = 120;

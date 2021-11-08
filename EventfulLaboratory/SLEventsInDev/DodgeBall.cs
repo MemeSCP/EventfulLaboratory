@@ -13,9 +13,9 @@ namespace EventfulLaboratory.slevents
         
         public override void OnRoundStart()
         {
-            Common.LockRound();
-            Common.LockAllDoors();
-            _shelter = Common.GetEvacuationZone();
+            Util.RoundUtils.LockRound();
+            Util.MapUtil.LockAllDoors();
+            _shelter = Util.MapUtil.GetEvacuationZone();
             Exiled.Events.Handlers.Player.Joined += PreRoundJoin;
             if (_shelter != null)
             {

@@ -16,6 +16,7 @@ namespace EventfulLaboratory.structs
     {
         public static AEvent GetEvent(LabEvents labEvents)
         {
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (labEvents)
             {
                 case LabEvents.PeanutChamber:
@@ -26,10 +27,14 @@ namespace EventfulLaboratory.structs
                     return new PeanutVirus();
                 case LabEvents.FreezeTag:
                     return new FreezeTag();
+                case LabEvents.AllRandom:
+                    return new AllRandom();
+                
                 default:
                     if (EventfulLab.Instance.Config.DebugMode)
                     {
                         //Debug only events. Not complete
+                        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                         switch (labEvents)
                         {
                             case LabEvents.AmazingRace:
@@ -53,7 +58,7 @@ namespace EventfulLaboratory.structs
 
         public static AEvent GetRandomEvent()
         {
-            return GetEvent((LabEvents) Common.GetRandom().Next(1, Enum.GetValues(typeof(LabEvents)).Length));
+            return GetEvent((LabEvents) Util.GetRandom().Next(1, Enum.GetValues(typeof(LabEvents)).Length));
         }
 
         public string GetName()
