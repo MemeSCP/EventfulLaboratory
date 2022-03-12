@@ -1,6 +1,6 @@
 ﻿using System;
 using CommandSystem;
-using EventfulLaboratory.slevents;
+using EventfulLaboratory.SLEvents;
 using EventfulLaboratory.structs;
 using Exiled.Permissions.Extensions;
 using Random = UnityEngine.Random;

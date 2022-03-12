@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using EventfulLaboratory.structs;
@@ -6,10 +5,9 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using MEC;
 using UnityEngine;
-using YamlDotNet.Core;
 using Random = System.Random;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class PeanutChamber : AEvent
     {

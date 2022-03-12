@@ -5,7 +5,7 @@ using Exiled.Events.EventArgs;
 using MEC;
 using UnityEngine;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class DodgeBall: AEvent
     {

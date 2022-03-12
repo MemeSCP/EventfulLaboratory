@@ -3,7 +3,7 @@ using System.Linq;
 using EventfulLaboratory.structs;
 using Exiled.API.Features;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     internal sealed class TagEvent : AEvent
     {

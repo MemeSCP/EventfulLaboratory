@@ -4,7 +4,7 @@ using EventfulLaboratory.structs;
 using Exiled.API.Features;
 using MEC;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class LarrysLair : AEvent
     {

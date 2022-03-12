@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dissonance;
 using EventfulLaboratory.Extension;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
@@ -9,23 +8,16 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using JetBrains.Annotations;
 using Mirror;
 using Respawning;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using YamlDotNet.Core;
-using Object = System.Object;
 using Random = System.Random;
-using APIDoor = Exiled.API.Features.Door;
 
 namespace EventfulLaboratory
 {
     public class Util
     {
-        private static Random rng = new Random();
-
-        public static Random GetRandom() => rng;
+        public static Random Random { get; } = new Random();
 
         public static class PlayerUtil
         {
@@ -47,7 +39,7 @@ namespace EventfulLaboratory
                 }
             }
 
-            public static Player GetRandomPlayer() => Player.List.Skip(rng.Next(0, Player.List.Count())).Single();
+            public static Player GetRandomPlayer() => Player.List.Skip(Random.Next(0, Player.List.Count())).Single();
 
             public static IEnumerable<Player> GetRandomPlayers(int amount = 1)
             {
@@ -57,16 +49,15 @@ namespace EventfulLaboratory
 
         public static class MapUtil
         {
-            [CanBeNull]
             [Obsolete("There is no Evacuation zone anymore. :Biblethump:")]
             public static Room GetEvacuationZone() => GetRoomByName(Constant.SHELTER_NAME);
 
             public static Room GetRoomByName(string roomName) =>
-                Map.Rooms.First(room => room.Name == roomName);
+                Room.List.First(room => room.Name == roomName);
 
             public static void LockAllDoors()
             {
-                foreach (var door in Map.Doors)
+                foreach (var door in Door.List)
                 {
                     if (!door.IsLocked)
                         door.ChangeLock(DoorLockType.AdminCommand);
@@ -83,7 +74,7 @@ namespace EventfulLaboratory
 
             public static void ToggleLockEntranceGate(bool lockit = true)
             {
-                foreach (APIDoor door in Map.Doors)
+                foreach (Door door in Door.List)
                 {
                     if (door.Type == DoorType.CheckpointEntrance) 
                     {
@@ -95,23 +86,23 @@ namespace EventfulLaboratory
 
             public static Room GetRandomHeavyRoom()
             {
-                List<Room> hczRooms = Map.Rooms.Where(room =>
+                List<Room> hczRooms = Room.List.Where(room =>
                     room.Zone == ZoneType.HeavyContainment &&
                     room.Type != RoomType.HczTesla &&
                     room.Type != RoomType.HczEzCheckpoint &&
                     room.Type != RoomType.Hcz049 &&
                     room.Type != RoomType.Hcz939
                 ).ToList();
-                return hczRooms[rng.Next(hczRooms.Count - 1)];
+                return hczRooms[Random.Next(hczRooms.Count - 1)];
             }
 
-            public static APIDoor GetRandomDoor() => Map.Doors[rng.Next(Map.Doors.Count - 1)];
+            public static Door GetRandomDoor() => Door.List.ElementAt(Random.Next(Door.List.Count() - 1));
 
-            public static void ToggleTeslats(Boolean state = false)
+            public static void ToggleTeslas(bool state = false)
             {
-                foreach (var teslaGate in Map.TeslaGates)
+                foreach (var teslaGate in Exiled.API.Features.TeslaGate.List)
                 {
-                    teslaGate.enabled = state;
+                    teslaGate.Base.enabled = state;
                 }
             }
 
@@ -138,9 +129,10 @@ namespace EventfulLaboratory
                 Team team = winner.GetTeam();
                 LockRound(false);
 
-                RoundSummary.escaped_ds = team == Team.CHI ? 1 : 0;
-                RoundSummary.escaped_scientists = team == Team.MTF ? 1 : 0;
-                RoundSummary.kills_by_scp = team == Team.SCP ? 1 : 0;
+                RoundSummary.EscapedClassD = team == Team.CHI ? 1 : 0;
+                RoundSummary.EscapedScientists = team == Team.MTF ? 1 : 0;
+                RoundSummary.KilledBySCPs = team == Team.SCP ? 1 : 0;
+                
                 foreach (var player in Player.List)
                 {
                     player.SetRole(winner);
@@ -238,9 +230,7 @@ namespace EventfulLaboratory
                         }
                         return SpawnPrefab(name, pos, rot.eulerAngles, scl);
                 }
-                return null;
             }
         }
     }
-
 }

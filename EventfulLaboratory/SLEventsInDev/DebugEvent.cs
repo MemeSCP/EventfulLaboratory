@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using EventfulLaboratory.structs;
 using Exiled.API.Features;
 using HarmonyLib;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class DebugEvent : AEvent
     {
@@ -13,7 +12,7 @@ namespace EventfulLaboratory.slevents
             StringBuilder builder = new StringBuilder();
             builder.Append("Rooms: ");
             
-            Map.Rooms.Do(room =>
+            Room.List.Do(room =>
             {
                 builder.Append(room.Name).Append("-").Append(room.Position).Append(", ");
             });

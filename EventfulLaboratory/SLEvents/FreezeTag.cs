@@ -8,11 +8,10 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using InventorySystem.Items.Firearms.Attachments;
 using MEC;
 using UnityEngine;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class FreezeTag : AEvent
     {
@@ -23,13 +22,13 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
-            _teamHandler = new EvenTeamSplitHandler(_ntfRole, _chaosRole, false);
+            _teamHandler = new EvenTeamSplitHandler(_ntfRole, _chaosRole);
             
             Util.PlayerUtil.GlobalBroadcast(20, "<size=20>Welcome to FreezeTag!\nYour goal is to shoot the <color=red>enemy</color> team, who will transform into their <color=blue>thawed</color> state.\nIF everyone is <color=blue>thawed</color> in the enemy team, your team wins!\nGood luck.\n<color=green>Chaos Insurgency</color> becomes <color=yellow>Scientist></color>\n<color=blue>NTF</color> becomes <color=orange>ClassD</color>.\nUnthawing works by cuffing the correct user!</size>");
             Util.RoundUtils.LockRound();
             Util.MapUtil.DisableElevators();
             Util.MapUtil.ToggleLockEntranceGate();
-            Util.MapUtil.ToggleTeslats();
+            Util.MapUtil.ToggleTeslas();
             
             foreach (var player in Player.List)
             {
@@ -163,7 +162,7 @@ namespace EventfulLaboratory.slevents
             ev.IsAllowed = false;
             ev.Target.SetAlmostInvincible();
             
-            if (ev.DamageType != DamageTypes.Com15) yield break;
+            if (ev.Handler.Type != DamageType.Com15) yield break;
             
             RoleType role = ev.Target.Role;
 
@@ -249,7 +248,7 @@ namespace EventfulLaboratory.slevents
                 true);
         }
 
-        private List<Room> GetHeavyRoomsBlocklisted() => Map.Rooms.Where(room =>
+        private List<Room> GetHeavyRoomsBlocklisted() => Room.List.Where(room =>
             room.Name.Contains("HCZ") &&
             !room.Name.Contains("Tesla") &&
             !room.Name.Contains("EZ_Checkpoint") &&

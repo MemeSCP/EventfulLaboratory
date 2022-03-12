@@ -1,6 +1,6 @@
 using EventfulLaboratory.structs;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class SuffocationRoom : AEvent
     {

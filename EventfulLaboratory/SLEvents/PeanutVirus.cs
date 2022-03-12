@@ -7,7 +7,7 @@ using MEC;
 using UnityEngine;
 using Random = System.Random;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class PeanutVirus : AEvent
     {

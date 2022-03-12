@@ -1,11 +1,8 @@
-using System;
-using System.Security.AccessControl;
 using EventfulLaboratory.structs;
-using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class AllRandom : AEvent
     {
@@ -33,7 +30,7 @@ namespace EventfulLaboratory.slevents
             RoleType role;
             while (true)
             {
-                role = (RoleType) Util.GetRandom().Next(20);
+                role = (RoleType) Util.Random.Next(20);
                     
                 //Spec and Tutorial is blocked
                 if (role == RoleType.Spectator ||

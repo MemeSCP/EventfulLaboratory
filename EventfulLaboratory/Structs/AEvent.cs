@@ -2,13 +2,11 @@ using System;
 using System.Linq;
 using System.Text;
 
-using EventfulLaboratory.slevents;
+using EventfulLaboratory.SLEvents;
 
 using Exiled.API.Features;
 
 using HarmonyLib;
-
-using Random = Unity.Mathematics.Random;
 
 namespace EventfulLaboratory.structs
 {
@@ -58,7 +56,7 @@ namespace EventfulLaboratory.structs
 
         public static AEvent GetRandomEvent()
         {
-            return GetEvent((LabEvents) Util.GetRandom().Next(1, Enum.GetValues(typeof(LabEvents)).Length));
+            return GetEvent((LabEvents) Util.Random.Next(1, Enum.GetValues(typeof(LabEvents)).Length));
         }
 
         public string GetName()
@@ -71,7 +69,7 @@ namespace EventfulLaboratory.structs
             var builder = new StringBuilder();
             builder.Append("Rooms: ");
 
-            Map.Rooms.Do(room => { builder.Append(room.Name).Append("-").Append(room.Position).Append(", "); });
+            Room.List.Do(room => { builder.Append(room.Name).Append("-").Append(room.Position.ToString()).Append(", "); });
             Logger.Debug(builder.ToString());
             Logger.Debug("NewRound");
         }

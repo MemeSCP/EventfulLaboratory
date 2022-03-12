@@ -8,7 +8,7 @@ using Interactables.Interobjects.DoorUtils;
 using UnityEngine;
 using Random = System.Random;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class TeleportingDoors : AEvent
     {
@@ -17,33 +17,34 @@ namespace EventfulLaboratory.slevents
 
         public override void OnRoundStart()
         {
-            _doorCache = Map.Doors
+            _doorCache = Door.List
                 .Zip(
-                    Map.Doors.OrderBy(e => _rng.Next()), //Zip Doors to Random Order
+                    Door.List.OrderBy(e => _rng.Next()), //Zip Doors to Random Order
                     (from, to) => new {from, to} //Map them to key,value pairs
                 )
                 .ToDictionary(x => x.from, y => y.to);
-            
-            Exiled.Events.Handlers.Player.SyncingData += ev =>
-            {
-                if (ev.Player.Role == RoleType.Spectator) return;
 
-                foreach (var doorVariant in _doorCache)
-                {
-                    //The door is Closed.
-                    if (doorVariant.Key == null || !doorVariant.Key.IsOpen) continue;
-
-                    if (Math.Abs(doorVariant.Key.Position.y - ev.Player.Position.y) > 2) continue;
-                    if (Math.Abs(doorVariant.Key.Position.x - ev.Player.Position.x) > 0.5) continue;
-                    if (Math.Abs(doorVariant.Key.Position.z - ev.Player.Position.z) > 0.5) continue;
-                    
-                    var pos = doorVariant.Value.Base.transform;
-
-                    ev.Player.Position = pos.position + pos.forward.ScaleStatic(new Vector3(1.2f, 1.2f, 1.2f)) + new Vector3(0, 1 ,0);
-                    
-                    return;
-                }
-            };
+            // TODO: Maybe patch ourselves
+            // Exiled.Events.Handlers.Player.SyncingData += ev =>
+            // {
+            //     if (ev.Player.Role == RoleType.Spectator) return;
+            //
+            //     foreach (var doorVariant in _doorCache)
+            //     {
+            //         //The door is Closed.
+            //         if (doorVariant.Key == null || !doorVariant.Key.IsOpen) continue;
+            //
+            //         if (Math.Abs(doorVariant.Key.Position.y - ev.Player.Position.y) > 2) continue;
+            //         if (Math.Abs(doorVariant.Key.Position.x - ev.Player.Position.x) > 0.5) continue;
+            //         if (Math.Abs(doorVariant.Key.Position.z - ev.Player.Position.z) > 0.5) continue;
+            //         
+            //         var pos = doorVariant.Value.Base.transform;
+            //
+            //         ev.Player.Position = pos.position + pos.forward.ScaleStatic(new Vector3(1.2f, 1.2f, 1.2f)) + new Vector3(0, 1 ,0);
+            //         
+            //         return;
+            //     }
+            // };
 
             Exiled.Events.Handlers.Map.Decontaminating += ev => ev.IsAllowed = false;
             foreach (var player in Player.List)

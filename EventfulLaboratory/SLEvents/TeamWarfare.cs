@@ -1,32 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using CameraShaking;
 using EventfulLaboratory.Extension;
 using EventfulLaboratory.Handler;
 using EventfulLaboratory.structs;
-
-using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
 using MEC;
-using UnityEngine;
-using UnityEngine.UI;
 using Firearm = Exiled.API.Features.Items.Firearm;
-using Random = System.Random;
 using Server = Exiled.Events.Handlers.Server;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     public class TeamWarfare : AEvent
     {
         private const RoleType _team1 = RoleType.NtfCaptain;
         private const RoleType _team2 = RoleType.ChaosRifleman;
-
-        private static Random _rng;
 
         private static ItemType _roundWeapon;
         private static uint _attachmentCode;
@@ -62,8 +53,7 @@ namespace EventfulLaboratory.slevents
         
         public override void OnNewRound()
         {
-            _rng = new Random();
-            _roundWeapon = _weapons[_rng.Next(_weapons.Length)];
+            _roundWeapon = _weapons[Util.Random.Next(_weapons.Length)];
             _attachmentCode = AttachmentsUtils.GetRandomAttachmentsCode(_roundWeapon);
             
             _kda = new Dictionary<int, KdaHolder>();
@@ -72,7 +62,7 @@ namespace EventfulLaboratory.slevents
 
             Server.RestartingRound += OnRoundRestart;
             
-            Log.Info("Round weapon:" + _roundWeapon);
+            Log.Info($"Round weapon: {_roundWeapon}");
         }
 
         public override void OnRoundStart()
@@ -174,7 +164,7 @@ namespace EventfulLaboratory.slevents
 
             Timing.WaitForSeconds(.3f);
 
-            var playerWeapon = new Firearm(_roundWeapon);
+            var playerWeapon = (Firearm) Item.Create(_roundWeapon, player);
             playerWeapon.Base.ApplyAttachmentsCode(_attachmentCode, false);
             
             Log.Info(playerWeapon.ToString());

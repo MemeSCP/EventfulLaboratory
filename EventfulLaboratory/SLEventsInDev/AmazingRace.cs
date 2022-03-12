@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CustomPlayerEffects;
 using EventfulLaboratory.structs;
+using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
@@ -14,7 +15,7 @@ using MapEvents = Exiled.Events.Handlers.Map;
 using PlayerEvent = Exiled.Events.Handlers.Player;
 using ServerEvent = Exiled.Events.Handlers.Server;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     internal sealed class AmazingRace : AEvent
     {
@@ -223,7 +224,8 @@ namespace EventfulLaboratory.slevents
 
         void PlayerHurt(HurtingEventArgs ev)
         {
-            if (ev.DamageType.Weapon.IsScp() || ev.DamageType.Weapon.IsWeapon() || ev.DamageType == DamageTypes.Wall)
+            // TODO: Validate if DamageType.Falldown is correct here
+            if (ev.Handler.Type.IsScp() || ev.Handler.Type.IsWeapon() || ev.Handler.Type == DamageType.Falldown) 
                 ev.IsAllowed = false;
         }
 

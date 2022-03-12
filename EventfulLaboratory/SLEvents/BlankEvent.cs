@@ -1,6 +1,6 @@
 using EventfulLaboratory.structs;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     /**
      * Blank Event for the system to munch on when there is no event going on

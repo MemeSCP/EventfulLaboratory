@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EventfulLaboratory.Extension;
 using EventfulLaboratory.structs;
 
-namespace EventfulLaboratory.slevents
+namespace EventfulLaboratory.SLEvents
 {
     internal sealed class Deathrun : AEvent
     {
