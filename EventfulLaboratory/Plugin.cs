@@ -8,7 +8,7 @@ namespace EventfulLaboratory
     public class EventfulLab : Plugin<EventfulConfig>
     {
         public override string Name => "Eventful Laboratory";
-        public override string Author => "Sqbika";
+        public override string Author => "MemeSCP";
 
         private static EventfulLab _instance;
         public static EventfulLab Instance => _instance;

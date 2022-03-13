@@ -16,7 +16,7 @@ namespace EventfulLaboratory
 
         public static void Debug(params string[] args)
         {
-            Log.Debug($"{Constant.SHORTFORM}#{string.Join(" ", args)}", EventfulLab.Instance.Config.DebugMode);
+            Log.Debug($"{Constant.SHORTFORM}#{string.Join(" ", args)}", EventfulLab.Instance.Config.DevelopmentMode);
         }
     }
 }

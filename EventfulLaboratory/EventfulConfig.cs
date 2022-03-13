@@ -6,7 +6,7 @@ namespace EventfulLaboratory
     {
         public bool IsEnabled { get; set; }
 
-        public bool DebugMode { get; set; } = false;
+        public bool DevelopmentMode { get; set; } = false;
 
         public bool RandomEvents { get; set; } = false;
 

@@ -178,7 +178,7 @@ namespace EventfulLaboratory.SLEvents
 
             ev.Target.SetAlmostInvincible();
 
-            if (EventfulLab.Instance.Config.DebugMode) yield break;            
+            if (EventfulLab.Instance.Config.DevelopmentMode) yield break;            
             
             bool isChaos = false, isNtf = false;
             foreach (Player player in Player.List)

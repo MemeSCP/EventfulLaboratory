@@ -59,6 +59,10 @@ namespace EventfulLaboratory.Commands
             {
                 switch (args[1])
                 {
+                    case "toys":
+                        //TODO (Sqbika): Implement PowerToys 
+                        response = "TODO";
+                        break;
                     case "init":
                         _builderOptions.Init(player);
                         break;
@@ -171,7 +175,7 @@ namespace EventfulLaboratory.Commands
                             }
                             
                         }
-                    }break;
+                    } break;
                     case ItemType.GunCrossvec: {
                         var ray = ev.Shooter.Raytrace();
                         if (ray.IsHit())
@@ -230,6 +234,7 @@ namespace EventfulLaboratory.Commands
                             if (thingie != null)
                             {
                                 Hint($"Collision Detected: {thingie.name}");
+                                //TODO (Sqbika): This doesn't work.
                                 foreach (var componentsInChild in thingie.GetComponentsInChildren<Material>())
                                 {
                                     componentsInChild.color = Color.red;
@@ -253,6 +258,7 @@ namespace EventfulLaboratory.Commands
 
         private static int _syncThrottle = 0;
 
+        //TODO: Find a way to prevent moving when holding an O5
         /*private void MovementEvent(SyncingDataEventArgs ev)
         {
             if (!IsSetup()) return;

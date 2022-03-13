@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CustomPlayerEffects;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using UnityEngine;
@@ -9,15 +10,20 @@ namespace EventfulLaboratory.Extension
     {
         public static void PreventWalking(this Player player)
         {
-            player.ChangeRunningSpeed(0F, false);
-            player.ChangeWalkingSpeed(0F, false);
+            player.EnableEffect<Ensnared>();
         }
         
         public static void SetAlmostInvincible(this Player player)
         {
             player.Health = 9001;
-            player.ArtificialHealth = 9001;
-            // player.ActiveArtificialHealthProcesses = new List<AhpStat.AhpProcess>(new[] {new AhpStat.AhpProcess(player.ArtificialHealth, player.ArtificialHealth, 0, 0, 0, true)});
+            player.AddAhp(
+                9001,
+                9001,
+                0f,
+                1f,
+                0,
+                true
+            );
         }
 
         public static void RestoreWalking(this Player player)

@@ -19,6 +19,8 @@ namespace EventfulLaboratory.SLEvents
 
         private void SpawnStartingPlatform()
         {
+            //TODO (Sqbika): Replace with PowerToys
+            /*
             //KDQxLjIsIDEuMywgNTMuNCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgtMTMuMiwgMTEyNy41LCAtNDkuMSl8KDAuNSwgMC41LCAtMC41LCAwLjUpfCgxMC4wLCA1LjAsIDEuMCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgtMTMuMiwgMTEyOS42LCAtNTguOSl8KDAuMCwgMC4wLCAtMC43LCAwLjcpfCgzLjAsIDUuMCwgMS4wKSVIQ1ogQnJlYWthYmxlRG9vcihDbG9uZSl8KDMuMCwgMTEyOS42LCAtMzkuNCl8KDAuMCwgMC4wLCAwLjcsIDAuNyl8KDMuMCwgNS4wLCAxLjAp
             var str = "KDQxLjIsIDEuMywgNTMuNCklSENaIEJyZWFrYWJsZURvb3IoQ2xvbmUpfCgtMTIuOCwgMTEyNi43LCAtNTQuMil8KDAuMCwgMC4wLCAwLjAsIDEuMCl8KDcuMCwgMS4wLCAxLjAp".FromBase64();
             var parts = str.Split('%');
@@ -31,7 +33,7 @@ namespace EventfulLaboratory.SLEvents
                     part[2].ParseQuat(),
                     part[3].ParseVec3()
                 );
-            }
+            }*/
         }
         
         #endregion

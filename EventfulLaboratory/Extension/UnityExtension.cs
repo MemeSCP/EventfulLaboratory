@@ -62,19 +62,11 @@ namespace EventfulLaboratory.Extension
             while (true)
             {
                 var ni = middleMan.GetComponent<NetworkIdentity>();
-                if (ni != null && ni.isActiveAndEnabled)
-                    return middleMan;
-                else
-                {
-                    if (middleMan.transform.parent == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        middleMan = middleMan.transform.parent.gameObject;
-                    }
-                }
+                if (ni != null && ni.isActiveAndEnabled) return middleMan;
+                
+                if (middleMan.transform.parent == null) return null;
+
+                middleMan = middleMan.transform.parent.gameObject;
             }
         }
 

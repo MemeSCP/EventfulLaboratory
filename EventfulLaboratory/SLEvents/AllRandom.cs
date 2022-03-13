@@ -1,6 +1,7 @@
 using EventfulLaboratory.structs;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using MEC;
 
 namespace EventfulLaboratory.SLEvents
 {
@@ -14,6 +15,8 @@ namespace EventfulLaboratory.SLEvents
             {
                 SpawnPlayerAsRandom(player);
             }
+
+            Timing.CallDelayed(30f, OnRoundEnd);
         }
 
         public override void Disable() => OnRoundEnd();
@@ -30,7 +33,7 @@ namespace EventfulLaboratory.SLEvents
             RoleType role;
             while (true)
             {
-                role = (RoleType) Util.Random.Next(20);
+                role = (RoleType) Util.Random.Next(21);
                     
                 //Spec and Tutorial is blocked
                 if (role == RoleType.Spectator ||

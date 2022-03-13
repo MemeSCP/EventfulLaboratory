@@ -29,7 +29,7 @@ namespace EventfulLaboratory.structs
                     return new AllRandom();
                 
                 default:
-                    if (EventfulLab.Instance.Config.DebugMode)
+                    if (EventfulLab.Instance.Config.DevelopmentMode)
                     {
                         //Debug only events. Not complete
                         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
