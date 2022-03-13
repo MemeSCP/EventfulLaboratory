@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CommandSystem;
 using EventfulLaboratory.Extension;
+using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
 using Exiled.Permissions.Extensions;
 using MEC;
@@ -74,12 +76,7 @@ namespace EventfulLaboratory.Commands
                         player.RemoteAdminMessage($"Ray:{ray}\nPos:{player.Position}\nCollider: {ray.collider}\nDistance: {ray.distance}\nTransPos: {ray.transform}\nRotation{player.Rotation}\nAt: {ray.point}");
                         break;
                     case "prefabs":
-                        var str = "Prefabs:";
-                        NetworkManager.singleton.spawnPrefabs.ForEach(prefab =>
-                        {
-                            str += prefab.name + ": - " + prefab.gameObject.name;
-                        });
-                        player.RemoteAdminMessage(str);
+                        _handlePrefabs(args, player);
                         break;
                     default:
                         if (_builderOptions.HandleArgs(args))
@@ -108,7 +105,34 @@ namespace EventfulLaboratory.Commands
         public string Command { get; } = "builder";
         public string[] Aliases { get; } = new []{ "bld"};
         public string Description { get; } = "builder";
-    }
+
+        private void _handlePrefabs(IReadOnlyList<string> args, Player player)
+        {
+            var arg = args.Count > 2 ? args[2] : "list";
+            switch (arg)
+            {
+                case "list": {
+                    var str = "Prefabs:";
+                    NetworkManager.singleton.spawnPrefabs.ForEach(prefab =>
+                    {
+                        str += prefab.name + ": - " + prefab.gameObject.name + "\n";
+                    });
+                    player.RemoteAdminMessage(str);
+                } break;
+                case "spawnAll":
+                {
+                    var increment = new Vector3(5, 0);
+                    var startPos = player.Position + increment;
+                    NetworkManager.singleton.spawnPrefabs.ForEach(prefab =>
+                    {
+                        BuilderUtil.SpawnPrefab(prefab, startPos);
+                        startPos += increment;
+                    });
+                    player.RemoteAdminMessage("Prefabs spawned.");
+                } break;
+            }
+        }
+     }
 
     internal sealed class BuilderOptions
     {
@@ -123,7 +147,6 @@ namespace EventfulLaboratory.Commands
         public void Init(Player player)
         {
             Exiled.Events.Handlers.Player.Shooting += ShootingEvent;
-            //Exiled.Events.Handlers.Player.SyncingData += MovementEvent;
             BuilderPlayer = player;
             _center = player.Position;
             Timing.RunCoroutine(SetupBuilder(player));
@@ -132,7 +155,6 @@ namespace EventfulLaboratory.Commands
         ~BuilderOptions()
         {
             Exiled.Events.Handlers.Player.Shooting -= ShootingEvent;
-            //Exiled.Events.Handlers.Player.SyncingData -= MovementEvent;
         }
 
         private void Hint(string hint, float duration = 3f) => BuilderPlayer.ShowHint(hint, duration);
@@ -152,6 +174,11 @@ namespace EventfulLaboratory.Commands
 
             try
             {
+                if (ev.Shooter.CurrentItem.IsWeapon)
+                {
+                    ((Firearm) ev.Shooter.CurrentItem).Ammo++;
+                }
+                
                 switch (ev.Shooter.CurrentItem.Type)
                 {
                     case ItemType.GunRevolver: {

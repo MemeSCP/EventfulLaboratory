@@ -27,6 +27,8 @@ namespace EventfulLaboratory.structs
                     return new FreezeTag();
                 case LabEvents.AllRandom:
                     return new AllRandom();
+                case LabEvents.EscapeRace:
+                    return new EscapeRace();
                 
                 default:
                     if (EventfulLab.Instance.Config.DevelopmentMode)
@@ -45,6 +47,7 @@ namespace EventfulLaboratory.structs
                                 return new HideNSeek();
                             case LabEvents.SuffocationRoom:
                                 return new SuffocationRoom();
+                            
                             default:
                                 return new DebugEvent();
                         }
