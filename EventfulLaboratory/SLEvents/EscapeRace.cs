@@ -32,7 +32,7 @@ namespace EventfulLaboratory.SLEvents
 
         private static IEnumerator<float> SpawnAsClassDOrScientist(Player player)
         {
-            player.SetRole(RoleType.ClassD);
+            player.SetRole(player.Id % 2 == 0 ? RoleType.ClassD : RoleType.Scientist);
             yield return Timing.WaitForSeconds(.1f);
             player.ClearInventory();
             yield return Timing.WaitForSeconds(.1f);

@@ -67,12 +67,11 @@ namespace EventfulLaboratory.SLEvents
         private IEnumerator<float> OnPlayerSpawnRoutine(SpawningEventArgs ev)
         {
             yield return Timing.WaitForSeconds(0.3f);
-            if (ev.RoleType != RoleType.Scp173)
-            {
-                ev.Player.SetRole(RoleType.ClassD);
-                yield return Timing.WaitForSeconds(0.3f);
-                ev.Player.Position = Util.MapUtil.GetRoomByName(Constant.SEVEN_NINE_CHAMBER).Position + new Vector3(0, 2);
-            }
+            if (ev.RoleType == RoleType.Scp173) yield break;
+            
+            ev.Player.SetRole(RoleType.ClassD);
+            yield return Timing.WaitForSeconds(0.3f);
+            ev.Player.Position = Util.MapUtil.GetRoomByName(Constant.SEVEN_NINE_CHAMBER).Position + new Vector3(0, 2);
         }
 
         private void OnPeanutKillDelegate(DiedEventArgs ev)

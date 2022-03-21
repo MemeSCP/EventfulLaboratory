@@ -97,7 +97,7 @@ namespace EventfulLaboratory.SLEvents
         private IEnumerator<float> FewSecToRound()
         {
             yield return Timing.WaitForSeconds(3f);
-            for (int i = 10; i > 0; i--)
+            for (var i = 10; i > 0; i--)
             {
                 Util.PlayerUtil.GlobalBroadcast(1, "Round starts in " + i + " seconds.");
                 yield return Timing.WaitForSeconds(1);

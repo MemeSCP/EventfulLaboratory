@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,7 @@ using EventfulLaboratory.SLEvents;
 using Exiled.API.Features;
 
 using HarmonyLib;
+using MEC;
 
 namespace EventfulLaboratory.structs
 {
@@ -66,6 +68,9 @@ namespace EventfulLaboratory.structs
         {
             return GetType().Name.Split('.').Last();
         }
+
+        private CoroutineHandle CoroutineLambdaProxy<T>(T evArgs, Func<T, IEnumerator<float>> lambda) =>
+            Timing.RunCoroutine(lambda(evArgs));
 
         public virtual void OnNewRound()
         {

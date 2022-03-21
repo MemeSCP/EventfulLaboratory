@@ -17,6 +17,11 @@ namespace EventfulLaboratory.SLEvents
             }
 
             Timing.CallDelayed(30f, OnRoundEnd);
+            
+            Util.PlayerUtil.GlobalBroadcast(
+                15, 
+                "<size=15>Welcome to All Random!</size><br/>Normal game, except, well, Everyone is random role!", true
+            );
         }
 
         public override void Disable() => OnRoundEnd();

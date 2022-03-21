@@ -37,11 +37,7 @@ namespace EventfulLaboratory.SLEvents
 
             foreach (var room in GetHeavyRoomsBlocklisted())
             {
-                foreach (var doorVariant in room.Doors)
-                {
-                    if (!doorVariant.IsLocked)
-                        doorVariant.ChangeLock(DoorLockType.AdminCommand);
-                }
+                room.LockDown(-1, DoorLockType.AdminCommand);
             }
             
             Exiled.Events.Handlers.Player.Hurting += OnPlayerHurtProxy;

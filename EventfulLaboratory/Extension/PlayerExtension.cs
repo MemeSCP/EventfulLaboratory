@@ -28,6 +28,7 @@ namespace EventfulLaboratory.Extension
 
         public static void RestoreWalking(this Player player)
         {
+            player.DisableEffect<Ensnared>();
             player.ChangeRunningSpeed(1F, false);
             player.ChangeWalkingSpeed(1.2F, false);
         }

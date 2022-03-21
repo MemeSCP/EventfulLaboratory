@@ -106,10 +106,8 @@ namespace EventfulLaboratory.SLEvents
             ev.Target.ClearInventory();
             if (ev.Killer.Role != ev.Target.Role)
             {
-                AddToKda(ev.Killer.Id);
-                UpdateKdaOfUser(ev.Killer);
-                AddToKda(ev.Target.Id, false);
-                UpdateKdaOfUser(ev.Target);
+                AddAndUpdateKda(ev.Killer);
+                AddAndUpdateKda(ev.Target, false);
                 if (ev.Killer.Role == RoleType.ChaosRifleman)
                     _chaosKills++;
                 else
@@ -159,7 +157,6 @@ namespace EventfulLaboratory.SLEvents
             
             player.Ammo.Clear();
             
-            
             Log.Info("Round weapon:" + _roundWeapon);
 
             Timing.WaitForSeconds(.3f);
@@ -181,31 +178,24 @@ namespace EventfulLaboratory.SLEvents
             player.IsGodModeEnabled = false;
         }
 
-        private void AddToKda(int userid, bool kill = true)
+        private void AddAndUpdateKda(Player user, bool isKiller = true)
         {
-            if (!_kda.ContainsKey(userid))
+            if (!_kda.ContainsKey(user.Id))
             {
-                _kda.Add(userid, kill ? new KdaHolder(1, 0) : new KdaHolder(0,1 ));
+                _kda.Add(user.Id, isKiller ? new KdaHolder(1, 0, user.RankName) : new KdaHolder(0,1, user.RankName));
             }
             else
             {
-                if (kill)
-                    _kda[userid].AddKill();
+                if (isKiller)
+                    _kda[user.Id].AddKill();
                 else
-                    _kda[userid].AddDeath();
+                    _kda[user.Id].AddDeath();
             }
-        }
-
-        private void UpdateKdaOfUser(Player player)
-        {
+            
             if (!EventfulLab.Instance.Config.EnableTagModifications) return;
-
-            var kdaString = _kda.ContainsKey(player.Id) ? _kda[player.Id].ToString() : "/0|0/";
-
-            var text = player.RankName ?? "";
-            if (text.Contains("/")) text = text.Split('/')[2];
-            player.RankName = $"{kdaString} {text.TrimStart()}";
-            player.UpdateRankColorToRole();
+            
+            user.RankName = _kda[user.Id].ToString();
+            user.UpdateRankColorToRole();
         }
     }
     
@@ -213,17 +203,19 @@ namespace EventfulLaboratory.SLEvents
     {
         private int Kill { get; set; }
         private int Death { get; set; }
+        private string RankText { get; }
 
-        public KdaHolder(int kill, int death)
+        public KdaHolder(int kill, int death, string rankText)
         {
             Kill = kill;
             Death = death;
+            RankText = rankText;
         }
 
         public void AddKill(int amount = 1) => Kill += amount;
 
         public void AddDeath(int amount = 1) => Death += amount;
 
-        public override string ToString() => $"/{Kill}/{Death}";
+        public override string ToString() => $"/{Kill}/{Death} ${RankText}";
     }
 }
